@@ -5,12 +5,9 @@
 }
 
 body{
-    font-family: 'Roboto', cursive;
+    font-family: "ABeeZee", sans-serif, cursive;
     line-height: 1.6;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    padding-top: 80px;
 }
 
 #menu {
@@ -20,10 +17,12 @@ body{
     justify-content: flex-start;
     align-items: center;
     position: fixed;
-    top: 0; 
-    padding: 0 20px ;
-    border-bottom: 3px solid #000000;
+    top: 0;
+    padding: 0 20px;
+    border-bottom: 1px solid #000000;
     gap: 20px;
+    background-color: #fff;
+    z-index: 1000;
 }
 
 .logo img{
@@ -32,9 +31,12 @@ body{
 }
 
 #menu ul { 
-    padding:0px;
-    margin:0px;
-    list-style:none;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 10px;
 }
 
 #menu ul li { 
@@ -43,12 +45,12 @@ body{
 
 #menu ul li a { 
     font-size: 1.2rem;
-    padding: 2px 10px; 
-    display: inline-block; /* visual do link */ 
-    background-color:#EDEDED; 
-    color: #333; 
-    text-decoration: none; 
-    border-bottom:3px solid #EDEDED; 
+    padding: 2px 10px;
+    display: inline-block;
+    background-color: #EDEDED;
+    color: #333;
+    text-decoration: none;
+    border-bottom: 3px solid #EDEDED; 
 }
 
 #menu ul li a:hover {
@@ -59,10 +61,16 @@ h1{
     font-family: 'Ribeye', cursive;
     font-size: 3.5rem;
     margin-bottom: 10px;
+    text-align: center;
+}
+
+h2{
+    margin-bottom: 10px;
+    text-align: center;
 }
 
 p{
-
+    text-align: justify;
     font-size: 1.2rem;
     margin-bottom: 20px;
 }
@@ -78,7 +86,10 @@ p{
 .container_principal_imagem{
     display: flex;
     align-items: center;
-    justify-content: center; 
+    justify-content: center;
+    flex-wrap: wrap;
+    text-align: center;
+    height: 100vh; 
     gap: 20px; 
 }
 
@@ -88,7 +99,7 @@ p{
     border-radius: 10px;
 }
 
-button{
+.botao_index{
     padding: 15px 100px;
     font-size: 1rem;
     color: #000000;
@@ -96,4 +107,70 @@ button{
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.botao_index:hover {
+    background-color: #7afc7a;
+}
+
+.content{
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.container-galeria {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+}
+
+.container-galeria img {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 10px;
+}
+
+button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+
+video {
+    width: 100%;
+    max-width: 600px;
+    display: block;
+    margin: 20px auto;
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.5rem; /* Reduz o tamanho do título em telas menores */
+    }
+
+    p {
+        font-size: 1rem; /* Reduz o tamanho do texto em telas menores */
+    }
+
+    #menu ul {
+        justify-content: center; /* Centraliza os itens do menu em telas menores */
+    }
+
+    .galeria img {
+        max-width: 100%; /* Faz as imagens ocuparem a largura total em telas pequenas */
+    }
 }
