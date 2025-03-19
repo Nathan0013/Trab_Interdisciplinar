@@ -134,19 +134,35 @@ document.addEventListener("DOMContentLoaded", function() {
       }, 2000);
     }
   }
-  
-  // Verificar se o usuário já está logado
-  function verificarLogin() {
+
+function verificarLogin() {
     const token = sessionStorage.getItem("token");
     if (token) {
-      // Opcionalmente verificar se o token é válido com uma chamada ao backend
-      const jogoSelecionado = localStorage.getItem('jogoSelecionado');
-      if (jogoSelecionado) {
-        window.location.href = `/public/jogos/${jogoSelecionado}`;
-      }
+        const jogoSelecionado = localStorage.getItem("jogoSelecionado");
+        if (jogoSelecionado) {
+            window.location.href = `/public/${jogoSelecionado}`; // ✅ Agora vai funcionar
+        }
     }
+}
+
+
+
+function selecionarJogo(jogo) {
+  let caminhoJogo = "";
+
+  if (jogo === "memoria") {
+      caminhoJogo = "jogos/Jogo_da_Memoria/jogo_memoria.html"; // Sem "public/" aqui!
+  } else if (jogo === "forca") {
+      caminhoJogo = "jogos/Jogo_Da_Forca/jogo_forca.html";
+  } else if (jogo === "perguntas") {
+      caminhoJogo = "jogos/Perguntas_Respostas/resp_perg.html";
   }
-  
+
+  localStorage.setItem("jogoSelecionado", caminhoJogo);
+  console.log("Jogo selecionado:", caminhoJogo); // Depuração
+}
+
+
   // Verificar login ao carregar a página
   verificarLogin();
 });

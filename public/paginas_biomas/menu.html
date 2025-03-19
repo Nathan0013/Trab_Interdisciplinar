@@ -39,19 +39,35 @@
       <script>
         // Função para redirecionar para a tela de login passando o jogo escolhido
         function goToLogin(game) {
-          // Verifica se o usuário já está logado
-          const token = sessionStorage.getItem("token");
-          
-          if (token) {
-            // Se já estiver logado, vai direto para o jogo
-            window.location.href = '../jogos/' + game;
-          } else {
-            // Se não estiver logado, salva o jogo e redireciona para login
-            localStorage.setItem('jogoSelecionado', '../jogos/' + game);
-            // Caminho para a página de cadastro a partir de paginas_biomas
-            window.location.href = '../cadastro/tela_cadastro.html';
-          }
-        }
+  // Verifica se o usuário já está logado
+  const token = sessionStorage.getItem("token");
+  
+  let gameUrl;
+  
+  // Mapear o nome do arquivo para o caminho correto
+  switch(game) {
+    case 'jogo_memoria.html':
+      gameUrl = '../jogos/Jogo_da_Memoria/jogo_memoria.html';
+      break;
+    case 'jogo_forca.html':
+      gameUrl = '../jogos/Jogo_Da_Forca/jogo_forca.html';
+      break;
+    case 'resp_perg.html':
+      gameUrl = '../jogos/Perguntas_Respostas/resp_perg.html';
+      break;
+    default:
+      gameUrl = '../jogos/' + game;
+  }
+  
+  if (token) {
+    // Se já estiver logado, vai direto para o jogo
+    window.location.href = gameUrl;
+  } else {
+    // Se não estiver logado, salva o jogo e redireciona para login
+    localStorage.setItem('jogoSelecionado', gameUrl);
+    window.location.href = '../cadastro/tela_cadastro.html';
+  }
+}
       </script>
 
     </ul> 
