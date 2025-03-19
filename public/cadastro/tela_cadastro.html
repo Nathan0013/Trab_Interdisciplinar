@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login e Cadastro</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="login-page">
+        <div class="form">
+            <form class="register-form">
+                <input type="text" placeholder="Nome"/>
+                <input type="password" placeholder="Senha"/>
+                <input type="text" placeholder="Endereço de e-mail"/>
+                <button type="submit">Criar</button>
+                <p class="message">Já tem uma conta? <a href="#">Entrar</a></p>
+            </form>
+            <form class="login-form">
+                <input type="text" placeholder="Usuário"/>
+                <input type="password" placeholder="Senha"/>
+                <button type="submit">Login</button>
+                <p class="message">Ainda não tem uma conta? <a href="#">Criar uma conta</a></p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const links = document.querySelectorAll(".message a");
+            links.forEach(link => {
+                link.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    document.querySelector(".register-form").classList.toggle("hidden");
+                    document.querySelector(".login-form").classList.toggle("hidden");
+                });
+            });
+        
+            // Função de Cadastro
+            document.querySelector(".register-form").addEventListener("submit", async function (event) {
+                event.preventDefault();
+                const nome = this.querySelector("input[placeholder='Nome']").value;
+                const email = this.querySelector("input[placeholder='Endereço de e-mail']").value;
+                const senha = this.querySelector("input[placeholder='Senha']").value;
+        
+                const response = await fetch("http://localhost:3000/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nome, email, senha })
+                });
+        
+                const data = await response.json();
+                alert(data.message || data.error);
+            });
+        
+            // Função de Login
+            document.querySelector(".login-form").addEventListener("submit", async function (event) {
+                event.preventDefault();
+                const email = this.querySelector("input[placeholder='Usuário']").value;
+                const senha = this.querySelector("input[placeholder='Senha']").value;
+        
+                const response = await fetch("http://localhost:3000/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, senha })
+                });
+        
+                const data = await response.json();
+                if (data.token) {
+                    localStorage.setItem("token", data.token);
+                    alert("Login realizado com sucesso!");
+                } else {
+                    alert(data.error);
+                }
+            });
+        });
+        </script>
+        
+
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Roboto:300');
+
+        .login-page {
+            width: 360px;
+            padding: 8% 0 0;
+            margin: auto;
+        }
+        .form {
+            position: relative;
+            z-index: 1;
+            background: #FFFFFF;
+            max-width: 360px;
+            margin: 0 auto 100px;
+            padding: 45px;
+            text-align: center;
+            box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+        }
+        .form input {
+            font-family: "Roboto", sans-serif;
+            outline: 0;
+            background: #f2f2f2;
+            width: 100%;
+            border: 0;
+            margin: 0 0 15px;
+            padding: 15px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .form button {
+            font-family: "Roboto", sans-serif;
+            text-transform: uppercase;
+            outline: 0;
+            background: #4CAF50;
+            width: 100%;
+            border: 0;
+            padding: 15px;
+            color: #FFFFFF;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .form button:hover {
+            background: #43A047;
+        }
+        .form .message {
+            margin: 15px 0 0;
+            color: #b3b3b3;
+            font-size: 12px;
+        }
+        .form .message a {
+            color: #4CAF50;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .hidden {
+            display: none;
+        }
+        body {
+            background: linear-gradient(90deg, rgba(141,194,111,1) 0%, rgba(118,184,82,1) 50%);
+            font-family: "Roboto", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    </style>
+
+</body>
+</html>

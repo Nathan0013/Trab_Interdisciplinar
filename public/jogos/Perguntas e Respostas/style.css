@@ -1,0 +1,63 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Press Start 2P", system-ui;
+    font-weight: 400;
+    font-style: normal;
+}
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #0D0D0D;
+    color: #C9D1D9;
+}
+
+.container{
+    width: 80%;
+    height: 80%;
+    max-width: 600px;
+    font-size: 10px;
+}
+
+.alternativas{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 40px;
+}
+
+.alternativas button{
+    padding: 20px;
+    border-radius: 15px;
+    background-color: #067b8381;
+    color: #FFFFFF;
+    font-size: 40px;
+    /*Mãozinha do mouse*/
+    cursor: pointer;
+    /*Transição de cor*/
+    transition: background-color 0.3s;
+    font-size: 30px;
+}
+
+.alternativas button:hover{
+    background-color: #02565c81;
+}
+
+.epaco_questao{
+    padding: 20px;
+    border-radius: 15px;
+    padding: 20px;
+    background-color: #161B22;
+}
+
+.espaco_pontuacao{
+    margin-top: 40px;
+    border-radius: 15px;
+    padding: 20px;
+    background-color: #161B22;
+}
+

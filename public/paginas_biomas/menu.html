@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ribeye&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Press+Start+2P&family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=ABeeZee:ital@0;1&family=Dancing+Script:wght@400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Press+Start+2P&family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <title>Eco Saberes</title>
+</head>
+<body>
+  <script src="index.js"></script>
+  <nav id="menu">
+    <div class="logo">
+      <a href="index.html">
+        <img src="imagens/2024.06.23-22.24.00.png" alt="Logo Eco Saberes">
+      </a>
+    </div> 
+    <ul> 
+      <li><a href="Sobre.html">Sobre</a></li>
+      <li><a href="Amazônia.html">Amazônia</a></li>
+      <li><a href="Caatinga.html">Caatinga</a></li>
+      <li><a href="Serrado.html">Serrado</a></li>
+      <li><a href="Mata Atlântica.html">Mata Atlântica</a></li>
+      <li><a href="Pantanal.html">Pantanal</a></li>
+      <li><a href="Pampa.html">Pampa</a></li>
+      <!-- Navegação com Dropdown -->
+<li class="dropdown">
+  <a href="#">Jogos</a>
+  <div class="dropdown-content">
+    <a href="#" onclick="goToLogin('jogo_memoria')">Jogo da Memória</a>
+    <a href="#" onclick="goToLogin('jogo_forca')">Forca</a> <br>
+    <a href="#" onclick="goToLogin('resp_perg')">Quiz</a>
+  </div>
+</li>
+
+<script>
+  // Função para redirecionar para a tela de login passando o jogo escolhido
+  function goToLogin(game) {
+    // Redireciona para a página de login com o nome do jogo como parâmetro
+    window.location.href = `login.html?game=${game}`;
+  }
+</script>
+
+    </ul> 
+  </nav>
+  
+      <div class="container_principal_imagem">
+        <div class="container-primeira_pagina">
+            <p>Um guia sobre os biomas</p>
+            <h1>Eco Saberes</h1>
+            <p>Desfrute de um guia sobre os biomas brasileiros e divirta-se com jogos interativos</p>
+            <button class="botao_index">Começar</button>
+        </div>
+        <img src="imagens/2024.06.23-22.24.00.png" alt="Imagem sobre biomas" class="imagem_bioma">
+    </div>  
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Script para ajudar com o dropdown
+        const dropdown = document.querySelector('.dropdown');
+        const dropdownContent = document.querySelector('.dropdown-content');
+        
+        dropdown.addEventListener('mouseenter', function() {
+          dropdownContent.style.display = 'block';
+        });
+        
+        dropdown.addEventListener('mouseleave', function() {
+          dropdownContent.style.display = 'none';
+        });
+        
+        // Para evitar que o dropdown desapareça quando movemos o mouse para ele
+        dropdownContent.addEventListener('mouseenter', function() {
+          this.style.display = 'block';
+        });
+        
+        dropdownContent.addEventListener('mouseleave', function() {
+          this.style.display = 'none';
+        });
+      });
+    </script>  
+</body>
+</html>

@@ -1,0 +1,47 @@
+const words = [
+    { word: "abacaxi", clue: "Fruta tropical" },
+    { word: "elefante", clue: "Animal de grande porte com tromba longa" },
+    { word: "computador", clue: "Dispositivo eletrônico" },
+    { word: "girafa", clue: "Animal alto, com pescoço longo" },
+    { word: "chocolate", clue: "Doce feito de cacau" },
+    { word: "piano", clue: "Instrumento musical com teclas" },
+    { word: "tigre", clue: "Felino selvagem" },
+    { word: "esmeralda", clue: "Tipo de pedra preciosa" },
+    { word: "navio", clue: "Embarcação no mar" },
+    { word: "telefone", clue: "Dispositivo de comunicação" },
+    { word: "floresta", clue: "Área com muitas árvores" },
+    { word: "quadrado", clue: "Figura geométrica de quatro lados" },
+    { word: "foguete", clue: "Veículo espacial" },
+    { word: "sorvete", clue: "Doce gelado" },
+    { word: "bicicleta", clue: "Veículo de duas rodas" },
+    { word: "avião", clue: "Meio de transporte aéreo" },
+    { word: "macaco", clue: "Primate arbóreo" },
+    { word: "raios", clue: "Descargas elétricas na atmosfera" },
+    { word: "montanha", clue: "Elevação natural da terra" },
+    { word: "vela", clue: "Objeto para iluminação" },
+    { word: "janela", clue: "Abertura em paredes para ventilação e luz" },  
+    { word: "lâmpada", clue: "Dispositivo elétrico usado para iluminar" },  
+    { word: "abajur", clue: "Objeto que ilumina e decora ambientes" },  
+    { word: "lanterna", clue: "Objeto portátil usado para iluminação" },  
+    { word: "tocha", clue: "Fonte de luz composta por um pedaço de madeira com fogo" },  
+    { word: "castiçal", clue: "Suporte para velas" },  
+    { word: "lustre", clue: "Peça decorativa pendente usada para iluminação" },  
+    { word: "facho", clue: "Feixe de luz emitido por um foco luminoso" },  
+    { word: "lampião", clue: "Antiga fonte de luz alimentada por querosene" },  
+    { word: "candelabro", clue: "Objeto decorativo com vários suportes para velas" },
+    { word: "trilho", clue: "Segue um caminho pré-determinado" },  
+    { word: "ponte", clue: "Une o que antes estava separado" },  
+    { word: "nó", clue: "Une e aperta, mas também pode confundir" },  
+    { word: "bússola", clue: "Mostra o caminho sem andar" },  
+    { word: "mirante", clue: "Revela o horizonte em um ponto elevado" },  
+    { word: "ampulheta", clue: "Marca o tempo com areia" },  
+    { word: "teia", clue: "Frágil, mas estrategicamente construída" },  
+    { word: "âncora", clue: "Mantém firme, mesmo em águas agitadas" },  
+    { word: "alçapão", clue: "Esconde algo em um chão falso" },
+
+];
+  
+  export default function getWord() {
+    const index = Math.floor(Math.random() * words.length);
+    return words[index];
+  }
