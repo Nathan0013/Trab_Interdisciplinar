@@ -1,5 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
-* {
+
+body {
+  background-image: url('../img/Edu-Descansando.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+
+*{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -8,8 +17,3 @@
   font-family: "Press Start 2P", cursive;
 }
 
-body {
-  background-image: linear-gradient(to right, #10c500, #fff 50%, #10c500 100%);
-  background-size: contain;
-  background-repeat: no-repeat;
-}

@@ -4,10 +4,10 @@ const timer = document.querySelector('.timer')
 let movimentos = 0;
 
 const personagens = [
-    'cruzeiro',
-    'menorMG',
-    'palmeiras',
-    'flamengo',
+    'amazonia.jpg',
+    'cerrado.jpg',
+    'pampas.jpg',
+    'pantanal.jpg',
 ];
 
 const createElement = (tag, className) => {
@@ -78,7 +78,7 @@ const createCard = (personagem) => {
     const front = createElement('div', 'face front');
     const back = createElement('div', 'face back');
 
-    front.style.backgroundImage = `url('../img/${personagem}.png')`;
+    front.style.backgroundImage = `url('../img/${personagem}')`;
 
     card.appendChild(front);
     card.appendChild(back);

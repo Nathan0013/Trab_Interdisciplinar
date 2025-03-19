@@ -2,7 +2,7 @@ main{
     display: flex;
     flex-direction: column;
     width: 100%;
-    background-image:url('../img/stadium3_generated.jpg') ;
+    background-image:url('../img/Edu-Descansando.jpg') ;
     background-size: cover;
     min-height: 100vh;
     align-items: center;
@@ -58,7 +58,8 @@ transform: scaleX(-1);
 }
 
 .back {
-background-image:url('../img/ponto-de-interrogação-feito-das-esferas-de-futebol-14533647.webp');
+background-image:url('../img/biomas.jpg');
+border: 2px solid #073010;
 background-size: cover;
 background-position: center;
 backface-visibility: hidden;
