@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: linear-gradient(90deg, rgba(141,194,111,1) 0%, rgba(118,184,82,1) 50%);
+    font-family: "Roboto", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.login-page {
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+}
+
+.form {
+    position: relative;
+    background: #FFFFFF;
+    max-width: 100%;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+}
+
+.form h2 {
+    margin-bottom: 24px;
+    color: #333;
+    font-weight: 500;
+}
+
+.form input {
+    font-family: "Roboto", sans-serif;
+    outline: 0;
+    background: #f5f5f5;
+    width: 100%;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    padding: 15px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.form input:focus {
+    background: #fff;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.form button {
+    font-family: "Roboto", sans-serif;
+    text-transform: uppercase;
+    font-weight: 500;
+    outline: 0;
+    background: #4CAF50;
+    width: 100%;
+    border: 0;
+    border-radius: 4px;
+    padding: 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.form button:hover, .form button:active {
+    background: #43A047;
+}
+
+.form button:disabled {
+    background: #a5d6a7;
+    cursor: not-allowed;
+}
+
+.form .message {
+    margin: 20px 0 0;
+    color: #757575;
+    font-size: 14px;
+}
+
+.form .message a {
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.form .message a:hover {
+    text-decoration: underline;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Estilos para as mensagens de feedback */
+.message-container {
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.message-container.success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border-left: 4px solid #2e7d32;
+}
+
+.message-container.error {
+    background-color: #ffebee;
+    color: #c62828;
+    border-left: 4px solid #c62828;
+}
+
+/* Media queries para responsividade */
+@media (max-width: 480px) {
+    .login-page {
+        width: 95%;
+    }
+    
+    .form {
+        padding: 20px;
+    }
+    
+    .form input, .form button {
+        padding: 12px;
+    }
+}

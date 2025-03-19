@@ -1,80 +1,136 @@
 const express = require("express");
-const mysql = require("mysql2");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const db = require("../Trab_Interdisciplinar/public/cadastro/JS/banco"); // Novo arquivo unificado de banco de dados
+const verificarToken = require("../Trab_Interdisciplinar/public/cadastro/JS/autenticacao");
 require("dotenv").config();
 
 const app = express();
+
+// Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-// Configuração da conexão com MySQL
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "12345",
-  database: "banco_interdiciplinar"
-});
+// Servir arquivos estáticos
+app.use(express.static('public'));
 
-db.connect(err => {
-  if (err) {
-    console.log("Erro ao conectar ao MySQL:", err);
-  } else {
-    console.log("Conectado ao MySQL!");
+// Rota de cadastro com validação
+app.post("/register", async (req, res) => {
+  try {
+    const { nome, email, senha } = req.body;
+    
+    // Validação de dados
+    if (!nome || !email || !senha) {
+      return res.status(400).json({ error: "Todos os campos são obrigatórios" });
+    }
+    
+    if (senha.length < 6) {
+      return res.status(400).json({ error: "A senha deve ter pelo menos 6 caracteres" });
+    }
+    
+    // Verificar se o email já está cadastrado
+    const [users] = await db.query("SELECT * FROM usuarios WHERE email = ?", [email]);
+    if (users.length > 0) {
+      return res.status(400).json({ error: "E-mail já cadastrado" });
+    }
+    
+    // Hash da senha
+    const senhaHash = await bcrypt.hash(senha, 10);
+    
+    // Inserir usuário
+    await db.query(
+      "INSERT INTO usuarios (nome, email, senha, data_cadastro) VALUES (?, ?, ?, NOW())", 
+      [nome, email, senhaHash]
+    );
+    
+    res.status(201).json({ message: "Usuário registrado com sucesso!" });
+  } catch (error) {
+    console.error("Erro no cadastro:", error);
+    res.status(500).json({ error: "Erro ao registrar usuário" });
   }
 });
 
-// Rota de cadastro
-app.post("/register", async (req, res) => {
-  const { nome, email, senha } = req.body;
-
-  // Verifica se o email já está cadastrado
-  db.query("SELECT * FROM usuarios WHERE email = ?", [email], async (err, result) => {
-    if (err) return res.status(500).json({ error: "Erro no servidor" });
-
-    if (result.length > 0) {
-      return res.status(400).json({ error: "E-mail já cadastrado" });
-    }
-
-    // Criptografa a senha antes de salvar
-    const salt = await bcrypt.genSalt(10);
-    const senhaHash = await bcrypt.hash(senha, salt);
-
-    db.query("INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)", [nome, email, senhaHash], (err, result) => {
-      if (err) return res.status(500).json({ error: "Erro ao registrar usuário" });
-      res.status(201).json({ message: "Usuário registrado com sucesso!" });
-    });
-  });
-});
-
 // Rota de login
-app.post("/login", (req, res) => {
-  const { email, senha } = req.body;
-
-  db.query("SELECT * FROM usuarios WHERE email = ?", [email], async (err, result) => {
-    if (err) return res.status(500).json({ error: "Erro no servidor" });
-
-    if (result.length === 0) {
+app.post("/login", async (req, res) => {
+  try {
+    const { email, senha } = req.body;
+    
+    // Validação de dados
+    if (!email || !senha) {
+      return res.status(400).json({ error: "E-mail e senha são obrigatórios" });
+    }
+    
+    // Buscar usuário
+    const [users] = await db.query("SELECT * FROM usuarios WHERE email = ?", [email]);
+    if (users.length === 0) {
       return res.status(401).json({ error: "E-mail ou senha inválidos" });
     }
-
-    const user = result[0];
-
-    // Verifica a senha
+    
+    const user = users[0];
+    
+    // Verificar senha
     const senhaValida = await bcrypt.compare(senha, user.senha);
     if (!senhaValida) {
       return res.status(401).json({ error: "E-mail ou senha inválidos" });
     }
+    
+    // Gerar token JWT (2 horas de validade)
+    const token = jwt.sign(
+      { id: user.id, nome: user.nome }, 
+      process.env.JWT_SECRET, 
+      { expiresIn: "2h" }
+    );
+    
+    // Registrar login
+    await db.query("UPDATE usuarios SET ultimo_login = NOW() WHERE id = ?", [user.id]);
+    
+    res.json({ 
+      message: "Login realizado com sucesso!", 
+      token,
+      user: {
+        id: user.id,
+        nome: user.nome,
+        email: user.email
+      }
+    });
+  } catch (error) {
+    console.error("Erro no login:", error);
+    res.status(500).json({ error: "Erro no servidor" });
+  }
+});
 
-    // Gera token JWT
-    const token = jwt.sign({ id: user.id }, "secreto", { expiresIn: "1h" });
-
-    res.json({ message: "Login realizado com sucesso!", token });
-  });
+// Exemplo de rota protegida
+app.get("/user/profile", verificarToken, async (req, res) => {
+  try {
+    const [user] = await db.query(
+      "SELECT id, nome, email, data_cadastro, ultimo_login FROM usuarios WHERE id = ?", 
+      [req.userId]
+    );
+    
+    if (user.length === 0) {
+      return res.status(404).json({ error: "Usuário não encontrado" });
+    }
+    
+    res.json({ user: user[0] });
+  } catch (error) {
+    console.error("Erro ao buscar perfil:", error);
+    res.status(500).json({ error: "Erro no servidor" });
+  }
 });
 
 // Iniciar o servidor
-app.listen(3000, () => {
-  console.log("Servidor rodando na porta 3000");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
+
+// Tratamento de erros não capturados
+process.on("uncaughtException", (error) => {
+  console.error("Erro não tratado:", error);
+});
+
+process.on("unhandledRejection", (error) => {
+  console.error("Promise rejeitada não tratada:", error);
 });

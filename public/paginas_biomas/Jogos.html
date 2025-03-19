@@ -18,6 +18,22 @@
             <a href="#" onclick="verificarCadastro('resp_perg.html')">Jogo de Perguntas e Respostas</a>
         </div>
     </div>
+    <script>
+        // Função para verificar cadastro e redirecionar
+        function verificarCadastro(jogoUrl) {
+            // Verifica se há um token de sessão (usuário logado)
+            const token = sessionStorage.getItem("token");
+            
+            if (token) {
+                // Usuário já está logado, redireciona diretamente para o jogo
+                window.location.href = '../jogos/' + jogoUrl;
+            } else {
+                // Usuário não está logado, salva o jogo selecionado e redireciona para login
+                localStorage.setItem('jogoSelecionado', '../jogos/' + jogoUrl);
+                window.location.href = '../cadastro/tela_cadastro.html';
+            }
+        }
+        </script>
 
 </body>
 </html>
