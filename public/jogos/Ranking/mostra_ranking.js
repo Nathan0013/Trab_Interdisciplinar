@@ -1,4 +1,4 @@
-// ranking-display.js - Logic for displaying the ranking data
+const STORAGE_KEY = 'biomas_ranking_data';
 
 document.addEventListener('DOMContentLoaded', () => {
   // DOM elements

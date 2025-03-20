@@ -136,7 +136,11 @@ function verificaResposta(certa) {
       const score = calculateQuizScore(pontos, questoes.length);
       const playerName = localStorage.getItem('jogador') || 'Anonymous';
       
-      rankingManager.updatePlayerScore(playerName, 'quiz', score);
+      rankingManager.updatePlayerScore(playerName, 'quiz', score, {
+        correct: pontos,
+        total: questoes.length,
+        time: 0 // Placeholder se necessário
+      });
       
       container.innerHTML = `
         <div class="espaco_pontuacao">
@@ -155,10 +159,63 @@ homeButton.addEventListener('click', (event) => {
     }
 });
 
+
 function calculateQuizScore(correct, total) {
   // 20 pontos para cada resposta correta
   return correct * 20;
 }
+const rankingManager = {
+  updatePlayerScore: function(playerName, game, score, gameData = {}) {
+    const STORAGE_KEY = 'biomas_ranking_data';
+    let rankingData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+      geral: [],
+      forca: [],
+      memoria: [],
+      quiz: []
+    };
+
+    let playerIndex = rankingData[game].findIndex(p => p.name === playerName);
+    if (playerIndex !== -1) {
+      if (score > rankingData[game][playerIndex].score) {
+        rankingData[game][playerIndex].score = score;
+        rankingData[game][playerIndex].gameData = gameData;
+      }
+    } else {
+      rankingData[game].push({ name: playerName, score, gameData });
+    }
+
+    rankingData[game].sort((a, b) => b.score - a.score);
+    this.updateGeneralRanking(rankingData, playerName);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(rankingData));
+
+    return score;
+  },
+
+  updateGeneralRanking: function(rankingData, playerName) {
+    const games = ['forca', 'memoria', 'quiz'];
+    let totalScore = 0;
+    let gameData = {};
+
+    games.forEach(game => {
+      const playerInGame = rankingData[game].find(p => p.name === playerName);
+      if (playerInGame) {
+        totalScore += playerInGame.score;
+        gameData[game] = playerInGame.gameData;
+      }
+    });
+
+    let playerIndex = rankingData.geral.findIndex(p => p.name === playerName);
+    if (playerIndex !== -1) {
+      rankingData.geral[playerIndex].score = totalScore;
+      rankingData.geral[playerIndex].gameData = gameData;
+    } else {
+      rankingData.geral.push({ name: playerName, score: totalScore, gameData });
+    }
+
+    rankingData.geral.sort((a, b) => b.score - a.score);
+  }
+};
+
 
 
 

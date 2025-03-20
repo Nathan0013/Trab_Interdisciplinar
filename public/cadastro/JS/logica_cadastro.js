@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", function() {
           // Se não há jogo selecionado, redireciona para a página inicial
           showMessage("info", "Redirecionando para a página inicial...");
           setTimeout(() => {
-              window.location.href = "../paginas_biomas/index.html";
+              window.location.href = "public/paginas_biomas/menu.html";
           }, 1000);
       }
   }
@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", function() {
           if (jogoSelecionado) {
               window.location.href = jogoSelecionado;
           } else {
-              window.location.href = "../paginas_biomas/index.html";
+              window.location.href = "../paginas_biomas/menu.html";
           }
       }
   }

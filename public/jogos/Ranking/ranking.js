@@ -2,16 +2,15 @@
 const API_URL = 'http://localhost:3000';
 
 // Função para buscar dados do ranking
-async function getRankingData(game) {
-    try {
-        const response = await fetch(`${API_URL}/ranking?game=${game}`);
-        const data = await response.json();
-        return data.ranking; // Retorna apenas o array de ranking
-    } catch (error) {
-        console.error('Erro ao buscar ranking:', error);
-        return [];
-    }
+function getRankingData() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+    geral: [],
+    forca: [],
+    memoria: [],
+    quiz: []
+  };
 }
+
 
 // Função para salvar uma pontuação no banco de dados
 async function saveScore(playerId, game, score, gameSpecificData = {}) {
