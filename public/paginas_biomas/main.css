@@ -212,3 +212,22 @@ video {
 nav {
     z-index: 1000; /* Garante que o menu esteja acima de outros elementos */
 }
+
+.youtube-container {
+    position: relative;
+    width: 100%;
+    max-width: 700px; 
+    padding-bottom: 56.25%; 
+    height: 0;
+    overflow: hidden;
+    margin: 20px auto; /* Centraliza o container */
+}
+
+.youtube-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    max-height: 500px; /* Limita a altura máxima */
+}

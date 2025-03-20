@@ -21,11 +21,10 @@
       <li><a href="Sobre.html">Sobre</a></li>
       <li><a href="Amazônia.html">Amazônia</a></li>
       <li><a href="Caatinga.html">Caatinga</a></li>
-      <li><a href="Serrado.html">Serrado</a></li>
+      <li><a href="cerrado.html">Cerrado</a></li>
       <li><a href="Mata Atlântica.html">Mata Atlântica</a></li>
       <li><a href="Pantanal.html">Pantanal</a></li>
       <li><a href="Pampa.html">Pampa</a></li>
-      <!-- Navegação com Dropdown -->
       <li class="dropdown">
         <a href="/public/jogos/menu_jogos/indice_jogos.html">Jogos</a>
         <div class="dropdown-content">
@@ -34,77 +33,66 @@
           <a href="#" onclick="goToLogin('resp_perg.html')">Quiz</a>
         </div>
       </li>
-      
-
-      <script>
-        // Função para redirecionar para a tela de login passando o jogo escolhido
-        function goToLogin(game) {
-  // Verifica se o usuário já está logado
-  const token = sessionStorage.getItem("token");
-  
-  let gameUrl;
-  
-  // Mapear o nome do arquivo para o caminho correto
-  switch(game) {
-    case 'jogo_memoria.html':
-      gameUrl = '../jogos/Jogo_da_Memoria/jogo_memoria.html';
-      break;
-    case 'jogo_forca.html':
-      gameUrl = '../jogos/Jogo_Da_Forca/jogo_forca.html';
-      break;
-    case 'resp_perg.html':
-      gameUrl = '../jogos/Perguntas_Respostas/resp_perg.html';
-      break;
-    default:
-      gameUrl = '../jogos/' + game;
-  }
-  
-  if (token) {
-    // Se já estiver logado, vai direto para o jogo
-    window.location.href = gameUrl;
-  } else {
-    // Se não estiver logado, salva o jogo e redireciona para login
-    localStorage.setItem('jogoSelecionado', gameUrl);
-    window.location.href = '../cadastro/tela_cadastro.html';
-  }
-}
-      </script>
-
     </ul> 
   </nav>
   
-      <div class="container_principal_imagem">
-        <div class="container-primeira_pagina">
-            <p>Um guia sobre os biomas</p>
-            <h1>Eco Saberes</h1>
-            <p>Desfrute de um guia sobre os biomas brasileiros e divirta-se com jogos interativos</p>
-            <button class="botao_index">Começar</button>
-        </div>
-        <img src="../paginas_biomas/imagem/bioma-amazonia.webp" alt="Imagem sobre biomas" class="imagem_bioma">
-    </div>  
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // Script para ajudar com o dropdown
-        const dropdown = document.querySelector('.dropdown');
-        const dropdownContent = document.querySelector('.dropdown-content');
-        
-        dropdown.addEventListener('mouseenter', function() {
-          dropdownContent.style.display = 'block';
-        });
-        
-        dropdown.addEventListener('mouseleave', function() {
-          dropdownContent.style.display = 'none';
-        });
-        
-        // Para evitar que o dropdown desapareça quando movemos o mouse para ele
-        dropdownContent.addEventListener('mouseenter', function() {
-          this.style.display = 'block';
-        });
-        
-        dropdownContent.addEventListener('mouseleave', function() {
-          this.style.display = 'none';
-        });
+  <div class="container_principal_imagem">
+    <div class="container-primeira_pagina">
+        <p>Um guia sobre os biomas</p>
+        <h1>Eco Saberes</h1>
+        <p>Desfrute de um guia sobre os biomas brasileiros e divirta-se com jogos interativos</p>
+        <button class="botao_index" onclick="window.location.href='Amazônia.html'">Começar</button>
+    </div>
+    <img src="../paginas_biomas/imagem/bioma-amazonia.webp" alt="Imagem sobre biomas" class="imagem_bioma">
+  </div>  
+
+  <script>
+    // Função para redirecionar para a tela de login passando o jogo escolhido
+    function goToLogin(game) {
+      const token = sessionStorage.getItem("token");
+      let gameUrl;
+      switch(game) {
+        case 'jogo_memoria.html':
+          gameUrl = '../jogos/Jogo_da_Memoria/jogo_memoria.html';
+          break;
+        case 'jogo_forca.html':
+          gameUrl = '../jogos/Jogo_Da_Forca/jogo_forca.html';
+          break;
+        case 'resp_perg.html':
+          gameUrl = '../jogos/Perguntas_Respostas/resp_perg.html';
+          break;
+        default:
+          gameUrl = '../jogos/' + game;
+      }
+      if (token) {
+        window.location.href = gameUrl;
+      } else {
+        localStorage.setItem('jogoSelecionado', gameUrl);
+        window.location.href = '../cadastro/tela_cadastro.html';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Script para ajudar com o dropdown
+      const dropdown = document.querySelector('.dropdown');
+      const dropdownContent = document.querySelector('.dropdown-content');
+      
+      dropdown.addEventListener('mouseenter', function() {
+        dropdownContent.style.display = 'block';
       });
-    </script>  
+      
+      dropdown.addEventListener('mouseleave', function() {
+        dropdownContent.style.display = 'none';
+      });
+      
+      dropdownContent.addEventListener('mouseenter', function() {
+        this.style.display = 'block';
+      });
+      
+      dropdownContent.addEventListener('mouseleave', function() {
+        this.style.display = 'none';
+      });
+    });
+  </script>  
 </body>
 </html>
