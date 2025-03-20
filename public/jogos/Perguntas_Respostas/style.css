@@ -12,7 +12,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-image: url('../Jogo_da_Memoria/img/Edu-Descansando.jpg'); /* Caminho da imagem */
+    background-image: url('../menu_jogos/imag/7227553.jpg'); /* Caminho da imagem */
     background-size: cover; /* Faz a imagem cobrir todo o fundo */
     background-position:center; /* Centraliza a imagem */
     background-repeat: no-repeat; /* Evita que a imagem se repita */
@@ -63,5 +63,22 @@ body {
     border-radius: 15px;
     padding: 20px;
     background-color: #80ad17;
+}
+.home-button {
+    position: fixed; /* Fixa o botão na tela */
+    top: 20px; /* Distância do topo */
+    left: 20px; /* Distância da esquerda */
+    padding: 10px 10px;
+    background-color: #4CAF50; /* Cor de fundo */
+    color: white; /* Cor do texto */
+    text-decoration: none; /* Remove sublinhado do link */
+    border-radius: 5px; /* Bordas arredondadas */
+    font-size: 12px;
+    z-index: 1000; /* Garante que o botão fique acima de outros elementos */
+    transition: background-color 0.3s ease; /* Efeito de transição */
+}
+
+.home-button:hover {
+    background-color: #45a049; /* Cor de fundo ao passar o mouse */
 }
 

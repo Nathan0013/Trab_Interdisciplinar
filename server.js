@@ -15,8 +15,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-
-
 // Função para validar e-mail
 function validarEmail(email) {
   const re = /^[^\s@]+@[^\s@]+$/;
@@ -97,6 +95,87 @@ app.get("/user/profile", verificarToken, async (req, res) => {
     res.json({ user: user[0] });
   } catch (error) {
     console.error("Erro ao buscar perfil:", error);
+    res.status(500).json({ error: "Erro interno do servidor" });
+  }
+});
+
+// Rota para salvar pontuação
+app.post("/save-score", verificarToken, async (req, res) => {
+  try {
+    const { game, score, gameSpecificData } = req.body;
+    const userId = req.userId;
+
+    // Normalizar a pontuação com base no jogo
+    let normalizedScore;
+    switch (game) {
+      case 'forca':
+        const remainingAttempts = 7 - (gameSpecificData.attempts || 1);
+        normalizedScore = Math.round((remainingAttempts / 6) * 100);
+        break;
+
+      case 'memoria':
+        const timeScore = Math.max(0, 100 - (gameSpecificData.time / 3));
+        const movesScore = Math.max(0, 100 - (gameSpecificData.moves * 5));
+        normalizedScore = Math.round((timeScore + movesScore) / 2);
+        break;
+
+      case 'quiz':
+        normalizedScore = Math.round((score / 10) * 100);
+        break;
+
+      default:
+        normalizedScore = score;
+    }
+
+    // Salvar a pontuação no banco de dados
+    const [jogo] = await db.query("SELECT id FROM jogos WHERE nome = ?", [game]);
+    if (jogo.length === 0) {
+      return res.status(404).json({ error: "Jogo não encontrado" });
+    }
+
+    const jogoId = jogo[0].id;
+    await db.query(
+      "INSERT INTO pontuacoes (usuario_id, jogo_id, pontuacao, data_pontuacao) VALUES (?, ?, ?, NOW())",
+      [userId, jogoId, normalizedScore]
+    );
+
+    // Atualizar a pontuação total do usuário
+    await db.query(
+      "UPDATE usuarios SET pontuacao_total = pontuacao_total + ? WHERE id = ?",
+      [normalizedScore, userId]
+    );
+
+    res.json({ message: "Pontuação salva com sucesso!", score: normalizedScore });
+  } catch (error) {
+    console.error("Erro ao salvar pontuação:", error);
+    res.status(500).json({ error: "Erro interno do servidor" });
+  }
+});
+
+// Rota para buscar o ranking de um jogo
+app.get("/ranking", async (req, res) => {
+  try {
+    const { game } = req.query;
+
+    const [jogo] = await db.query("SELECT id FROM jogos WHERE nome = ?", [game]);
+    if (jogo.length === 0) {
+      return res.status(404).json({ error: "Jogo não encontrado" });
+    }
+
+    const jogoId = jogo[0].id;
+    const [ranking] = await db.query(
+      `SELECT u.nome, p.pontuacao, p.data_pontuacao 
+       FROM pontuacoes p
+       JOIN usuarios u ON p.usuario_id = u.id
+       WHERE p.jogo_id = ?
+       ORDER BY p.pontuacao DESC
+       LIMIT 10`,
+      [jogoId]
+    );
+
+    res.json({ ranking });
+  } catch (error) {
+    console.error("Erro ao buscar ranking:", error);
     res.status(500).json({ error: "Erro interno do servidor" });
   }
 });

@@ -132,14 +132,32 @@ function verificaResposta(certa) {
       questaoAtual++;
       carregaQuestao();
     }
-    else{
+    else {
+      const score = calculateQuizScore(pontos, questoes.length);
+      const playerName = localStorage.getItem('jogador') || 'Anonymous';
+      
+      rankingManager.updatePlayerScore(playerName, 'quiz', score);
+      
       container.innerHTML = `
-    <div class="espaco_pontuacao">
-      <h1>Fim de Jogo!</h1>
-      <h2>Você acertou ${pontos} de ${questoes.length}</h2>
-    </div>
-  `;
-    }    
+        <div class="espaco_pontuacao">
+          <h1>Fim de Jogo!</h1>
+          <h2>Você acertou ${pontos} de ${questoes.length}</h2>
+          <h3>Pontuação: ${score}</h3>
+        </div>
+      `;
+    }
+}
+const homeButton = document.querySelector('.home-button');
+homeButton.addEventListener('click', (event) => {
+    const confirmExit = confirm('Tem certeza que deseja voltar ao menu?');
+    if (!confirmExit) {
+        event.preventDefault(); // Cancela o redirecionamento se o jogador cancelar
+    }
+});
+
+function calculateQuizScore(correct, total) {
+  // 20 pontos para cada resposta correta
+  return correct * 20;
 }
 
 

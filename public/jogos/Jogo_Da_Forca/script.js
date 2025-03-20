@@ -68,7 +68,26 @@ function verifyLetter(letter) {
     }, 100);
   }
 }
-
+function handleForcaWin() {
+  const playerName = localStorage.getItem('jogador') || 'Anonymous';
+  const wordLength = document.querySelectorAll('.guess-word span').length;
+  const errors = indexImg - 1;
+  const score = calculateForcaScore(errors, wordLength);
+  
+  rankingManager.updatePlayerScore(playerName, 'forca', score);
+  
+  setTimeout(() => {
+    alert(`Ganhou!!! Pontuação: ${score}`);
+    init();
+  }, 100);
+}
+const homeButton = document.querySelector('.home-button');
+homeButton.addEventListener('click', (event) => {
+    const confirmExit = confirm('Tem certeza que deseja voltar ao menu?');
+    if (!confirmExit) {
+        event.preventDefault(); // Cancela o redirecionamento se o jogador cancelar
+    }
+});
 function generateButtons() {
   contentBtns.textContent = "";
 
@@ -85,4 +104,14 @@ function generateButtons() {
 
     contentBtns.appendChild(btn);
   }
+}
+function calculateForcaScore(errors, wordLength) {
+  // Pontuação base: 100 pontos
+  // Subtrai 10 pontos para cada erro
+  // Adiciona um bônus com base no tamanho da palavra
+  const baseScore = 100;
+  const errorPenalty = errors * 10;
+  const lengthBonus = wordLength * 5;
+  
+  return Math.max(0, baseScore - errorPenalty + lengthBonus);
 }

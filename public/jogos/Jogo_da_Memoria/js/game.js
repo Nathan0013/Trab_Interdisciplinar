@@ -1,6 +1,6 @@
 const grid = document.querySelector('.grid');
-const spanPlayer = document.querySelector('.player')
-const timer = document.querySelector('.timer')
+const spanPlayer = document.querySelector('.player');
+const timer = document.querySelector('.timer');
 let movimentos = 0;
 
 const personagens = [
@@ -23,16 +23,23 @@ const checkEndGame = () => {
     const disabledCards = document.querySelectorAll('.desabilitar-carta');
 
     if (disabledCards.length === 8) { 
-        clearInterval(this.loop)
+        clearInterval(this.loop);
+
+        // Coletar dados do jogo
+        const tempo = +timer.innerHTML; // Tempo em segundos
+        const playerName = spanPlayer.innerHTML;
+
+        // Salvar a pontuação no ranking
+        addScore(playerName, 'memoria', movimentos, { moves: movimentos, time: tempo });
+
         setTimeout(() => {
-        alert(`Parabéns!!! <<< ${spanPlayer.innerHTML} >>> Você Conseguiu!`);
-    },500)
-}
+            alert(`Parabéns!!! <<< ${spanPlayer.innerHTML} >>> Você Conseguiu!`);
+        }, 500);
+    }
 };
 
 const checkCards = () => {
     movimentos++;
-    
     document.querySelector('.movimentos').innerHTML = `Movimentos: ${movimentos}`;
 
     const firstCharacter = firstCard.getAttribute('data-character');
@@ -88,6 +95,13 @@ const createCard = (personagem) => {
 
     return card;
 };
+const homeButton = document.querySelector('.home-button');
+homeButton.addEventListener('click', (event) => {
+    const confirmExit = confirm('Tem certeza que deseja voltar ao menu?');
+    if (!confirmExit) {
+        event.preventDefault(); // Cancela o redirecionamento se o jogador cancelar
+    }
+});
 
 const loadGame = () => {
     const duplicapersonagens = [...personagens, ...personagens];
@@ -99,19 +113,16 @@ const loadGame = () => {
     });
 };
 
-const startTimer = () =>{
+const startTimer = () => {
     this.loop = setInterval(() => {
-        const currentTime = +timer.innerHTML
+        const currentTime = +timer.innerHTML;
         timer.innerHTML = currentTime + 1;
-    },1000)
-}
-window.onload = () =>{
-    const playerName = localStorage.getItem('jogador')
-    spanPlayer.innerHTML = playerName
+    }, 1000);
+};
+
+window.onload = () => {
+    const playerName = localStorage.getItem('jogador');
+    spanPlayer.innerHTML = playerName;
     startTimer();
-
     loadGame();
-}
-
-
-
+};

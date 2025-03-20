@@ -74,3 +74,21 @@ button:hover {
     padding: 10px;
   }
 }
+.home-button {
+  position: fixed; /* Fixa o botão na tela */
+  top: 20px; /* Distância do topo */
+  left: 20px; /* Distância da esquerda */
+  padding: 10px 10px;
+  background-color: #4CAF50; /* Cor de fundo */
+  color: white; /* Cor do texto */
+  text-decoration: none; /* Remove sublinhado do link */
+  border-radius: 5px; /* Bordas arredondadas */
+  font-size: 12px;
+  z-index: 1000; /* Garante que o botão fique acima de outros elementos */
+  transition: background-color 0.3s ease; /* Efeito de transição */
+}
+
+.home-button:hover {
+  background-color: #45a049; /* Cor de fundo ao passar o mouse */
+}
+
