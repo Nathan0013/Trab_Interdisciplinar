@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-Br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogos dos Biomas Brasileiros</title>
+    <link rel="stylesheet" href="estilo_menu.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Jogos dos Biomas Brasileiros</h1>
+            <h2>Aprenda e se divirta conhecendo os biomas do Brasil!</h2>
+        </header>
+        
+        <div class="player-login">
+            <div class="login-form" id="login-section">
+                <h3>Como você se chama?</h3>
+                <input type="text" id="player-name" placeholder="Seu nome">
+                <button id="btn-login">Começar a Jogar</button>
+            </div>
+            <div class="player-welcome hidden" id="welcome-section">
+                <h3>Bem-vindo(a), <span id="player-name-display"></span>!</h3>
+                <button id="btn-logout">Trocar Jogador</button>
+            </div>
+            <div class="button-container" style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
+                <a href="/public/paginas_biomas/menu.html" class="btn btn-secondary" style="background-color: #6c757d; border: none; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; text-align: center;">Voltar ao Menu</a>
+              </div>
+        </div>
+        
+        <div class="games-grid">
+            <div class="game-card">
+                <h3>Jogo da Forca</h3>
+                <div class="game-image">
+                    <img src="imag/logoforca.png" alt="Jogo da Forca">
+                </div>
+                <p>Descubra as palavras relacionadas aos biomas brasileiros antes que o bonequinho seja enforcado!</p>
+                <a href="../Jogo_Da_Forca/jogo_forca.html" class="play-button">Jogar Agora</a>
+            </div>
+            
+            <div class="game-card">
+                <h3>Jogo da Memória</h3>
+                <div class="game-image">
+                    <img src="imag/logomemoria.png" alt="Jogo da Memória">
+                </div>
+                <p>Teste sua memória encontrando os pares de cartas com imagens dos biomas brasileiros.</p>
+                <a href="../Jogo_da_Memoria/jogo_memoria.html" class="play-button">Jogar Agora</a>
+            </div>
+            
+            <div class="game-card">
+                <h3>Quiz de Biomas</h3>
+                <div class="game-image">
+                    <img src="imag/image.png" alt="Quiz de Biomas">
+                </div>
+                <p>Teste seus conhecimentos sobre os biomas brasileiros neste desafiador quiz!</p>
+                <a href="../Perguntas_Respostas/resp_perg.html" class="play-button">Jogar Agora</a>
+            </div>
+        </div>
+        
+        <div class="ranking-button-container">
+            <a href="../Ranking/ranking.html" class="ranking-button">
+                🏆 Ver Ranking dos Jogadores 🏆
+            </a>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Jogos Educativos sobre Biomas Brasileiros - Desenvolvido para fins educacionais</p>
+    </footer>
+    
+    <script src="ranking.js"></script>
+    <script src="logica_indice.js"></script>
+</body>
+</html>

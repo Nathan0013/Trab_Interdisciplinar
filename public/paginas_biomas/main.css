@@ -1,0 +1,214 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: "ABeeZee", sans-serif, cursive;
+    line-height: 1.6;
+    padding-top: 80px;
+}
+
+#menu {
+    display: flex;
+    width: 100%;
+    height: 80px;
+    justify-content: flex-start;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    padding: 0 20px;
+    border-bottom: 1px solid #000000;
+    gap: 20px;
+    background-color: #fff; /* Fundo branco */
+    z-index: 1000;
+}
+
+.logo img{
+    width: 60px;
+    height: auto;
+}
+
+#menu ul { 
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 10px;
+}
+
+#menu ul li { 
+    position: relative;
+    padding: 10px 15px;
+}
+
+#menu ul li a { 
+    font-size: 1.2rem;
+    padding: 2px 10px;
+    display: inline-block;
+    background-color: #EDEDED; /* Cor original dos botões */
+    color: #333; /* Texto preto */
+    text-decoration: none;
+    border-bottom: 3px solid #EDEDED; 
+}
+
+#menu ul li a:hover {
+    border-bottom: 3px solid #5FCA63; /* Verde no hover */
+}
+
+/* Oculta o dropdown por padrão */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #EDEDED; /* Mantém a cor original */
+    min-width: 150px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    top: 100%;
+    left: 0;
+    padding: 5px 0;
+    z-index: 10;
+}
+
+/* Exibe o dropdown quando o mouse está sobre o li.dropdown */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Estilo dos links dentro do dropdown */
+.dropdown-content a {
+    color: #333;
+    display: block;
+    text-align: left;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-bottom: 3px solid #5FCA63;
+}
+
+.dropdown-content a:hover {
+    background-color: #dcdcdc;
+    border-bottom: 3px solid #5FCA63;
+}
+
+h1{
+    font-family: 'Ribeye', cursive;
+    font-size: 3.5rem;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+h2{
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+p{
+    text-align: justify;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.container-primeira_pagina {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+}
+
+.container_principal_imagem{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    text-align: center;
+    height: 100vh; 
+    gap: 20px; 
+}
+
+.imagem_bioma {
+    width: 600px; 
+    height: auto;
+    border-radius: 10px;
+}
+
+.botao_index{
+    padding: 15px 100px;
+    font-size: 1rem;
+    color: #000000;
+    background-color: #5FCA63;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.botao_index:hover {
+    background-color: #7afc7a;
+}
+
+.content{
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.container-galeria {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+}
+
+.container-galeria img {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 10px;
+}
+
+button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+video {
+    width: 100%;
+    max-width: 600px;
+    display: block;
+    margin: 20px auto;
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.5rem; /* Reduz o tamanho do título em telas menores */
+    }
+
+    p {
+        font-size: 1rem; /* Reduz o tamanho do texto em telas menores */
+    }
+
+    #menu ul {
+        justify-content: center; /* Centraliza os itens do menu em telas menores */
+    }
+
+    .galeria img {
+        max-width: 100%; /* Faz as imagens ocuparem a largura total em telas pequenas */
+    }
+}
+
+nav {
+    z-index: 1000; /* Garante que o menu esteja acima de outros elementos */
+}

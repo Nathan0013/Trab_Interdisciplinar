@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu de Jogos</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <h1>Bem-vindo ao Site de Jogos</h1>
+
+    <div class="dropdown">
+        <button class="dropbtn">Jogos</button>
+        <div class="dropdown-content">
+            <a href="#" onclick="verificarCadastro('jogo_memoria.html')">Jogo da Memória</a>
+            <a href="#" onclick="verificarCadastro('jogo_forca.html')">Jogo da Forca</a>
+            <a href="#" onclick="verificarCadastro('resp_perg.html')">Jogo de Perguntas e Respostas</a>
+        </div>
+    </div>
+    <script>
+        // Função para verificar cadastro e redirecionar
+        function verificarCadastro(jogoUrl) {
+  // Verifica se há um token de sessão (usuário logado)
+  const token = sessionStorage.getItem("token");
+  
+  let gameUrl;
+  
+  // Mapear o nome do arquivo para o caminho correto
+  switch(jogoUrl) {
+    case 'jogo_memoria.html':
+      gameUrl = '../jogos/Jogo_da_Memoria/jogo_memoria.html';
+      break;
+    case 'jogo_forca.html':
+      gameUrl = '../jogos/Jogo_Da_Forca/jogo_forca.html';
+      break;
+    case 'resp_perg.html':
+      gameUrl = '../jogos/Perguntas_Respostas/resp_perg.html';
+      break;
+    default:
+      gameUrl = '../jogos/' + jogoUrl;
+  }
+  
+  if (token) {
+    // Usuário já está logado, redireciona diretamente para o jogo
+    window.location.href = gameUrl;
+  } else {
+    // Usuário não está logado, salva o jogo selecionado e redireciona para login
+    localStorage.setItem('jogoSelecionado', gameUrl);
+    window.location.href = '../cadastro/tela_cadastro.html';
+  }
+}
+        </script>
+
+</body>
+</html>

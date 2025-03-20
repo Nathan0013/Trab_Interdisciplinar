@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ribeye&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Press+Start+2P&family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=ABeeZee:ital@0;1&family=Dancing+Script:wght@400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Press+Start+2P&family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <title>Eco Saberes</title>
+</head>
+<body>
+  <script src="index.js" defer></script>
+    <nav id="menu">
+      <div class="logo">
+        <a href="menu.html">
+          <img src="imagem/eco_logo-removebg-preview.png" alt="Logo Eco Saberes">
+      </a>
+      </div> 
+        <ul> 
+          <li><a href="Sobre.html">Sobre</a></li>
+          <li><a href="Amazônia.html">Amazônia</a></li>
+          <li><a href="Caatinga.html">Caatinga</a></li>
+          <li><a href="Serrado.html">Serrado</a></li>
+          <li><a href="Mata Atlântica.html">Mata Atlântica</a></li>
+          <li><a href="Pantanal.html">Pantanal</a></li>
+          <li><a href="Pampa.html">Pampa</a></li>
+          <li class="dropdown">
+            <a href="#">Jogos</a>
+            <div class="dropdown-content">
+              <a href="#" onclick="goToLogin('jogo_memoria.html')">Jogo da Memória</a>
+              <a href="#" onclick="goToLogin('jogo_forca.html')">Forca</a> <br>
+              <a href="#" onclick="goToLogin('resp_perg.html')">Quiz</a>
+            </div>
+          </li> 
+        </ul> 
+      </nav>
+      <h1>Pampa</h1>
+      <div class="content">
+          <p>O Pampa é um bioma característico do extremo sul do Brasil, estendendo-se pelo Rio Grande do Sul e por partes da Argentina e Uruguai. Apresenta uma paisagem de vastas planícies cobertas por gramíneas, com poucas árvores e um clima temperado. A fauna inclui animais como o veado-campeiro, o graxaim-do-campo e diversas aves, como a ema. Tradicionalmente, é uma região voltada para a pecuária e a agricultura, atividades que moldaram sua cultura e economia. O Pampa tem grande relevância ambiental, mas sofre com a degradação devido ao avanço da monocultura e da criação intensiva de gado.</p>
+          <p>Além disso, a Amazônia é o lar de diversas comunidades indígenas, cujas culturas e modos de vida estão intimamente ligados à floresta. Porém, a região enfrenta grandes desafios, como o desmatamento e as mudanças climáticas, que ameaçam tanto sua preservação quanto a sobrevivência de seus habitantes e ecossistemas.</p>
+      <section>
+          <div class="container-galeria">
+            <button id="prev">&#10094;</button>
+            <img id="galleria_Imagem" src="imagem/bioma-pampa.webp">
+            <button id="next">&#10095;</button>
+        </div>
+          <p>A Amazônia é a maior floresta tropical do mundo, localizada na América do Sul, principalmente no Brasil, e se estendendo por outros países como Peru, Colômbia e Venezuela. Ela abriga uma enorme biodiversidade, com milhões de espécies de plantas, animais e microorganismos, muitos dos quais ainda desconhecidos. A região também desempenha um papel crucial no equilíbrio climático global, pois atua como um grande regulador do ciclo do carbono.</p>
+          <p>Além disso, a Amazônia é o lar de diversas comunidades indígenas, cujas culturas e modos de vida estão intimamente ligados à floresta. Porém, a região enfrenta grandes desafios, como o desmatamento e as mudanças climáticas, que ameaçam tanto sua preservação quanto a sobrevivência de seus habitantes e ecossistemas.</p>
+        </div>
+      </section>
+      <section class="video">
+          <video controls>
+              <source src="videos/amazonia.mp4" type="video/mp4">
+              Seu navegador não suporta o elemento de vídeo.
+          </video>
+        </section>
+        <script>
+          // Função para redirecionar para a tela de login passando o jogo escolhido
+          function goToLogin(game) {
+            // Verifica se o usuário já está logado
+            const token = sessionStorage.getItem("token");
+            
+            let gameUrl;
+            
+            // Mapear o nome do arquivo para o caminho correto
+            switch(game) {
+              case 'jogo_memoria.html':
+                gameUrl = '../jogos/Jogo_da_Memoria/jogo_memoria.html';
+                break;
+              case 'jogo_forca.html':
+                gameUrl = '../jogos/Jogo_Da_Forca/jogo_forca.html';
+                break;
+              case 'resp_perg.html':
+                gameUrl = '../jogos/Perguntas_Respostas/resp_perg.html';
+                break;
+              default:
+                gameUrl = '../jogos/' + game;
+            }
+            
+            if (token) {
+              // Se já estiver logado, vai direto para o jogo
+              window.location.href = gameUrl;
+            } else {
+              // Se não estiver logado, salva o jogo e redireciona para login
+              localStorage.setItem('jogoSelecionado', gameUrl);
+              window.location.href = '../cadastro/tela_cadastro.html';
+            }
+          }
+        
+          document.addEventListener('DOMContentLoaded', function() {
+            // Script para ajudar com o dropdown
+            const dropdown = document.querySelector('.dropdown');
+            const dropdownContent = document.querySelector('.dropdown-content');
+            
+            dropdown.addEventListener('mouseenter', function() {
+              dropdownContent.style.display = 'block';
+            });
+            
+            dropdown.addEventListener('mouseleave', function() {
+              dropdownContent.style.display = 'none';
+            });
+            
+            // Para evitar que o dropdown desapareça quando movemos o mouse para ele
+            dropdownContent.addEventListener('mouseenter', function() {
+              this.style.display = 'block';
+            });
+            
+            dropdownContent.addEventListener('mouseleave', function() {
+              this.style.display = 'none';
+            });
+          });
+        </script>
+</body>
+</html>

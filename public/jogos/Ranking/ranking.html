@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-Br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking - Biomas Brasileiros</title>
+    <link rel="stylesheet" href="ranking.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏆 Ranking de Campeões 🏆</h1>
+            <h2>Biomas Brasileiros</h2>
+        </header>
+        
+        <nav class="game-tabs">
+            <button class="tab-btn active" data-game="geral">Total</button>
+            <button class="tab-btn" data-game="forca">Forca</button>
+            <button class="tab-btn" data-game="memoria">Memória</button>
+            <button class="tab-btn" data-game="quiz">Quiz</button>
+        </nav>
+        
+        <div class="ranking-container">
+            <div class="top-players">
+                <div class="player-card top-1">
+                    <div class="medal">🥇</div>
+                    <div class="player-name">-</div>
+                    <div class="player-score">-</div>
+                </div>
+                <div class="player-card top-2">
+                    <div class="medal">🥈</div>
+                    <div class="player-name">-</div>
+                    <div class="player-score">-</div>
+                </div>
+                <div class="player-card top-3">
+                    <div class="medal">🥉</div>
+                    <div class="player-name">-</div>
+                    <div class="player-score">-</div>
+                </div>
+            </div>
+            
+            <div class="ranking-table-container">
+                <table class="ranking-table">
+                    <thead>
+                        <tr>
+                            <th>Posição</th>
+                            <th>Nome</th>
+                            <th>Pontuação</th>
+                            <th>Forca</th>
+                            <th>Memória</th>
+                            <th>Quiz</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ranking-data">
+                        <!-- Ranking data will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="player-stats" id="current-player-stats">
+            <h3>Suas estatísticas</h3>
+            <div class="stats-content">
+                <p>Carregando...</p>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <button class="action-btn" id="reset-scores">Limpar Pontuações</button>
+            <a href="../menu_jogos/indice_jogos.html" class="action-btn home-btn">Voltar aos Jogos</a>
+        </div>
+    </div>
+    
+    <script src="ranking.js"></script>
+    <script src="mostra_ranking.js"></script>
+</body>
+</html>

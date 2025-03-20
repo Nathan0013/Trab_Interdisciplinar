@@ -1,0 +1,84 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Press Start 2P", system-ui;
+    font-weight: 400;
+    font-style: normal;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('../menu_jogos/imag/7227553.jpg'); /* Caminho da imagem */
+    background-size: cover; /* Faz a imagem cobrir todo o fundo */
+    background-position:center; /* Centraliza a imagem */
+    background-repeat: no-repeat; /* Evita que a imagem se repita */
+    color: #C9D1D9;
+}
+
+.container{
+    width: 80%;
+    height: 80%;
+    max-width: 500px;
+    font-size: 10px;
+    
+}
+
+.alternativas{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 40px;
+}
+
+.alternativas button{
+    padding: 20px;
+    border-radius: 15px;
+    background-color: #2a5a0a81;
+    color: #FFFFFF;
+    font-size: 35px;
+    /*Mãozinha do mouse*/
+    cursor: pointer;
+    /*Transição de cor*/
+    transition: background-color 0.3s;
+    font-size: 30px;
+}
+
+.alternativas button:hover{
+    background-color: #bec9ca81;
+}
+
+.epaco_questao{
+    padding: 20px;
+    border-radius: 15px;
+    padding: 20px;
+    background-color: #9e7a18;
+}
+
+.espaco_pontuacao{
+    margin-top: 30px;
+    border-radius: 15px;
+    padding: 20px;
+    background-color: #80ad17;
+}
+.home-button {
+    position: fixed; /* Fixa o botão na tela */
+    top: 20px; /* Distância do topo */
+    left: 20px; /* Distância da esquerda */
+    padding: 10px 10px;
+    background-color: #4CAF50; /* Cor de fundo */
+    color: white; /* Cor do texto */
+    text-decoration: none; /* Remove sublinhado do link */
+    border-radius: 5px; /* Bordas arredondadas */
+    font-size: 12px;
+    z-index: 1000; /* Garante que o botão fique acima de outros elementos */
+    transition: background-color 0.3s ease; /* Efeito de transição */
+}
+
+.home-button:hover {
+    background-color: #45a049; /* Cor de fundo ao passar o mouse */
+}
+

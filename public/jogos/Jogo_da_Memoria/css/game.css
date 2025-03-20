@@ -1,0 +1,100 @@
+main{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-image:url('../img/Edu-Descansando.jpg') ;
+    background-size: cover;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 20px 58px;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(255, 255, 255, 0.8);
+    width: 100%;
+    max-width: 800px;
+    padding: 30px;
+    margin: 0 0 30px;
+    border-radius: 5px;
+}
+
+.grid {
+    display:grid;
+    grid-template-columns:repeat(4,1fr)  ;
+    gap: 15px;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.card{
+    aspect-ratio: 1/1;
+    width: 100%;
+    height: 200px;
+    background-color: rgb(247, 247, 247);
+    border-radius: 5px;
+    position: relative;
+    transition: all 400ms ease;
+    transform-style: preserve-3d;
+}
+
+.face {
+    width: 100%;
+    height: 100%;
+    position:absolute;
+}
+
+.front {
+
+ transform: rotate(180deg);
+ border: 2px solid #073010;
+ background-size: cover;
+background-position:center center;
+transform: scaleX(-1);
+}
+
+.back {
+background-image:url('../img/biomas.jpg');
+border: 2px solid #073010;
+background-size: cover;
+background-position: center;
+backface-visibility: hidden;
+}
+
+.reveal-card{
+    transform: rotateY(180deg);
+}
+
+.card:hover {
+   
+}
+@keyframes flash {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.5); }
+}
+
+.desabilitar-carta{
+    animation: flash 0.5s ease-in-out;
+}
+
+.home-button {
+    position: fixed; /* Fixa o botão na tela */
+    top: 20px; /* Distância do topo */
+    left: 20px; /* Distância da esquerda */
+    padding: 10px 10px;
+    background-color: #4CAF50; /* Cor de fundo */
+    color: white; /* Cor do texto */
+    text-decoration: none; /* Remove sublinhado do link */
+    border-radius: 5px; /* Bordas arredondadas */
+    font-size: 12px;
+    z-index: 1000; /* Garante que o botão fique acima de outros elementos */
+    transition: background-color 0.3s ease; /* Efeito de transição */
+}
+
+.home-button:hover {
+    background-color: #45a049; /* Cor de fundo ao passar o mouse */
+}

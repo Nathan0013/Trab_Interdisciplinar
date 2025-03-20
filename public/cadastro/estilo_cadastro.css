@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+    --primary-color: #4CAF50;
+    --primary-dark: #3d8b40;
+    --primary-light: #a5d6a7;
+    --secondary-color: #8bc34a;
+    --text-dark: #333333;
+    --text-light: #757575;
+    --text-white: #ffffff;
+    --bg-light: #f5f5f5;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --error-color: #f44336;
+    --success-color: #4caf50;
+    --input-bg: #f9f9f9;
+    --card-bg: #ffffff;
+    --transition: all 0.3s ease;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #8fd3f4 0%, #84fab0 100%);
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    width: 100%;
+    max-width: 450px;
+}
+
+.auth-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px var(--shadow-color);
+    padding: 40px;
+    transition: var(--transition);
+    animation: fadeIn 0.5s ease;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo {
+    font-size: 40px;
+    color: var(--primary-color);
+    margin-bottom: 16px;
+    display: inline-block;
+}
+
+.auth-header h1 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-dark);
+}
+
+.auth-header p {
+    color: var(--text-light);
+    font-size: 14px;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    background-color: var(--input-bg);
+    transition: var(--transition);
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+}
+
+.input-group:focus-within {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.input-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    color: var(--text-light);
+}
+
+.auth-form input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 15px 16px 15px 0;
+    font-size: 14px;
+    color: var(--text-dark);
+    font-family: inherit;
+    outline: none;
+}
+
+.auth-form input::placeholder {
+    color: var(--text-light);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--text-white);
+    border: none;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.auth-footer {
+    margin-top: 24px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-light);
+}
+
+.auth-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+.message-container {
+    margin-top: 24px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+    position: relative;
+}
+
+.message-container.success {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+    border-left: 4px solid var(--success-color);
+}
+
+.message-container.error {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: var(--error-color);
+    border-left: 4px solid var(--error-color);
+}
+
+.message-container.info {
+    background-color: rgba(33, 150, 243, 0.1);
+    color: #2196f3;
+    border-left: 4px solid #2196f3;
+}
+
+/* Animações */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Media queries para responsividade */
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 24px;
+    }
+    
+    .logo {
+        font-size: 32px;
+    }
+    
+    .auth-header h1 {
+        font-size: 20px;
+    }
+    
+    .btn-primary {
+        padding: 14px;
+    }
+}
