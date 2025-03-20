@@ -9,106 +9,107 @@ let questaoAtual = 0;
 //array para as perguntas
 
 const questoes = [
-    {
-        questaoConst: "1) Qual é a unidade básica de dados na computação que pode assumir os valores 0 ou 1?",
-        answers: [
-          { option: "A) Byte", correct: false },
-          { option: "B) Bit", correct: true },
-          { option: "C) Kilobyte", correct: false },
-          { option: "D) Megabit", correct: false },
-        ],
-    },
-
-      {
-        questaoConst: "2) O que significa a sigla CPu em computação?",
-        answers: [
-          { option: "A) Core Peripheral Unit", correct: false },
-          { option: "B) Computer Personal Unit", correct: false },
-          { option: "C) Control Program Usage", correct: false },
-          { option: "D) Central Processing Unit", correct: true },
-        ],
-    },
-
-      {
-        questaoConst: "3) O que é um algoritmo?",
-        answers: [
-          {option: "A) Um tipo de software", correct: false },
-          {option: "B) Uma sequência de passos para resolver um problema", correct: true },
-          {option: "C) Um hardware de alta performance", correct: false },
-          {option: "D) Uma linguagem de programação", correct: false },
-        ],
-    },
-
-      {
-        questaoConst: "4) Qual protocolo é usado para transferir páginas web na internet?",
-        answers: [
-          {option: "A) FTP", correct: false },
-          {option: "B) SMTP", correct: false },
-          {option: "C) HTTP", correct: true },
-          {option: "D) TCP", correct: false },
-        ],
-    },
-
-      {
-        questaoConst: "5) Qual é a principal função do sistema operacional?",
-        answers: [
-          {option: "A) Gerenciar hardware e software", correct: true },
-          {option: "B) Proteger contra vírus", correct: false },
-          {option: "C) Executar cálculos complexos", correct: false },
-          {option: "D) Criar programas", correct: false },
-        ],
-    },
-
-      {
-       questaoConst: "6) O que significa a sigla URL?",
-       answers: [
-         {option: "A) Universal Resource Locator", correct: false },
-         {option: "B) Unique Retrieval Link", correct: false },
-         {option: "C) Uniform Resource Locator", correct: true },
-         {option: "D) Unified Reference Language", correct: false },
-      ],
-    },
-
-    {
-      questaoConst: "7) O que significa 'open source' no contexto de software?",
+  {
+      questaoConst: "1) Qual é o maior bioma do Brasil em extensão territorial?",
       answers: [
-          {option: "A) Software que exige pagamento para uso", correct: false },
-          {option: "B) Software que funciona apenas em código aberto", correct: false },
-          {option: "C) Software de uso exclusivo para empresas", correct: false },
-          {option: "D) Software que pode ser alterado e distribuído livremente", correct: true },
+        { option: "A) Mata Atlântica", correct: false },
+        { option: "B) Cerrado", correct: false },
+        { option: "C) Amazônia", correct: true },
+        { option: "D) Pantanal", correct: false },
       ],
-    },
+  },
 
-    {
-      questaoConst: "8) Qual é o principal objetivo de uma linguagem de marcação como HTML?",
+  {
+      questaoConst: "2) Qual bioma brasileiro é conhecido por sua vegetação densa e grande biodiversidade?",
       answers: [
-          {option: "A) Criar scripts para interatividade", correct: false },
-          {option: "B) Definir a estrutura de uma página web", correct: true },
-          {option: "C) Estilizar elementos da página", correct: false },
-          {option: "D) Processar dados no servidor", correct: false },
+        { option: "A) Pampa", correct: false },
+        { option: "B) Pantanal", correct: false },
+        { option: "C) Mata Atlântica", correct: true },
+        { option: "D) Caatinga", correct: false },
       ],
-    },
+  },
 
-    {
-      questaoConst: "9) O que é um endereço IP?",
+  {
+      questaoConst: "3) Qual bioma é caracterizado por um clima seco e vegetação espinhosa?",
       answers: [
-          {option: "A) Um identificador único para dispositivos em uma rede", correct: true },
-          {option: "B) Um protocolo de transferência de arquivos", correct: false },
-          {option: "C) Um tipo de memória volátil", correct: false },
-          {option: "D) Um sistema de segurança para redes", correct: false },
+        { option: "A) Pantanal", correct: false },
+        { option: "B) Amazônia", correct: false },
+        { option: "C) Cerrado", correct: false },
+        { option: "D) Caatinga", correct: true },
       ],
-    },
+  },
 
-    {
-      questaoConst: "10) Qual é o propósito do comando 'ping' em redes de computadores?",
+  {
+      questaoConst: "4) Qual bioma brasileiro sofre maior desmatamento devido à agropecuária?",
       answers: [
-          {option: "A) Testar a conectividade entre dispositivos", correct: true },
-          {option: "B) Monitorar o uso de memória", correct: false },
-          {option: "C) Verificar o status de arquivos no sistema", correct: false },
-          {option: "D) Configurar o endereço IP de um dispositivo", correct: false },
+        { option: "A) Pantanal", correct: false },
+        { option: "B) Amazônia", correct: true },
+        { option: "C) Pampa", correct: false },
+        { option: "D) Mata Atlântica", correct: false },
       ],
-    },
+  },
+
+  {
+      questaoConst: "5) O que caracteriza o Pantanal?",
+      answers: [
+        { option: "A) Grandes altitudes", correct: false },
+        { option: "B) Florestas tropicais", correct: false },
+        { option: "C) Inundações periódicas", correct: true },
+        { option: "D) Clima seco", correct: false },
+      ],
+  },
+
+  {
+     questaoConst: "6) Qual bioma é conhecido como a 'savana brasileira'?",
+     answers: [
+       { option: "A) Cerrado", correct: true },
+       { option: "B) Amazônia", correct: false },
+       { option: "C) Pampa", correct: false },
+       { option: "D) Caatinga", correct: false },
+    ],
+  },
+
+  {
+    questaoConst: "7) Qual animal é um símbolo da Amazônia?",
+    answers: [
+        { option: "A) Lobo-guará", correct: false },
+        { option: "B) Arara-azul", correct: false },
+        { option: "C) Onça-pintada", correct: true },
+        { option: "D) Tamanduá-bandeira", correct: false },
+    ],
+  },
+
+  {
+    questaoConst: "8) Qual bioma é encontrado no sul do Brasil e possui vegetação de gramíneas?",
+    answers: [
+        { option: "A) Pampa", correct: true },
+        { option: "B) Cerrado", correct: false },
+        { option: "C) Pantanal", correct: false },
+        { option: "D) Mata Atlântica", correct: false },
+    ],
+  },
+
+  {
+    questaoConst: "9) Qual bioma é o lar de espécies como o lobo-guará e o tamanduá-bandeira?",
+    answers: [
+        { option: "A) Pampa", correct: false },
+        { option: "B) Cerrado", correct: true },
+        { option: "C) Amazônia", correct: false },
+        { option: "D) Pantanal", correct: false },
+    ],
+  },
+
+  {
+    questaoConst: "10) Qual bioma brasileiro possui o maior número de rios e lagos?",
+    answers: [
+        { option: "A) Caatinga", correct: false },
+        { option: "B) Amazônia", correct: false },
+        { option: "C) Pantanal", correct: true },
+        { option: "D) Pampa", correct: false },
+    ],
+  },
 ];
+
 
 function carregaQuestao(){
     questao.textContent = questoes[questaoAtual].questaoConst;
