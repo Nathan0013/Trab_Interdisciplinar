@@ -226,6 +226,7 @@ const loadGame = () => {
 };
 
 const startTimer = () => {
+
     // Reinicia o timer
     timer.innerHTML = '00';
     
@@ -233,7 +234,7 @@ const startTimer = () => {
     if (this.loop) {
         clearInterval(this.loop);
     }
-    
+
     this.loop = setInterval(() => {
         const currentTime = +timer.innerHTML;
         timer.innerHTML = currentTime + 1;

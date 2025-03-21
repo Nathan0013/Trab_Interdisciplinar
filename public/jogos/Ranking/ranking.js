@@ -116,7 +116,9 @@ async function addScore(game, score, gameSpecificData = {}) {
     // Normalizar a pontuação com base no jogo
     switch (game) {
         case 'forca':
+
             const remainingAttempts = 7 - (gameSpecificData.errors || 1);
+
             normalizedScore = Math.round((remainingAttempts / 6) * 100);
             break;
 

@@ -92,6 +92,7 @@ button:hover {
   background-color: #45a049; /* Cor de fundo ao passar o mouse */
 }
 
+
 /* Estilos para a tela de fim de jogo */
 .game-end-overlay {
   display: none;
