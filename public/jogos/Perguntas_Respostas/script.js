@@ -7,7 +7,6 @@ let pontos = 0;
 let questaoAtual = 0;
 
 //array para as perguntas
-
 const questoes = [
   {
       questaoConst: "1) Qual é o maior bioma do Brasil em extensão territorial?",
@@ -110,7 +109,6 @@ const questoes = [
   },
 ];
 
-
 function carregaQuestao(){
     questao.textContent = questoes[questaoAtual].questaoConst;
     respostas.innerHTML = ""; //limpar
@@ -142,15 +140,17 @@ function verificaResposta(certa) {
         time: 0 // Placeholder se necessário
       });
       
-      container.innerHTML = `
-        <div class="espaco_pontuacao">
-          <h1>Fim de Jogo!</h1>
-          <h2>Você acertou ${pontos} de ${questoes.length}</h2>
-          <h3>Pontuação: ${score}</h3>
-        </div>
-      `;
+      // Usar a função showGameEnd para mostrar o overlay de fim de jogo
+      // igual ao jogo da memória
+      if (typeof showGameEnd === 'function') {
+        showGameEnd(score, 'quiz');
+      } else {
+        // Fallback caso a função não esteja disponível
+        alert(`Parabéns ${playerName}! Você acertou ${pontos} de ${questoes.length} questões e fez ${score} pontos!`);
+      }
     }
 }
+
 const homeButton = document.querySelector('.home-button');
 homeButton.addEventListener('click', (event) => {
     const confirmExit = confirm('Tem certeza que deseja voltar ao menu?');
@@ -159,13 +159,19 @@ homeButton.addEventListener('click', (event) => {
     }
 });
 
-
 function calculateQuizScore(correct, total) {
   // 20 pontos para cada resposta correta
   return correct * 20;
 }
+
 const rankingManager = {
-  updatePlayerScore: function(playerName, game, score, gameData = {}) {
+  updatePlayerScore: async function(playerName, game, score, gameData = {}) {
+    // Se o script ranking.js estiver carregado, usar a implementação de lá
+    if (window.rankingManager && window.rankingManager !== this) {
+      return window.rankingManager.updatePlayerScore(playerName, game, score, gameData);
+    }
+    
+    // Implementação fallback caso ranking.js não esteja carregado
     const STORAGE_KEY = 'biomas_ranking_data';
     let rankingData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
       geral: [],
@@ -179,14 +185,42 @@ const rankingManager = {
       if (score > rankingData[game][playerIndex].score) {
         rankingData[game][playerIndex].score = score;
         rankingData[game][playerIndex].gameData = gameData;
+        rankingData[game][playerIndex].date = new Date().toISOString();
       }
     } else {
-      rankingData[game].push({ name: playerName, score, gameData });
+      rankingData[game].push({ 
+        name: playerName, 
+        score, 
+        gameData, 
+        date: new Date().toISOString()
+      });
     }
 
     rankingData[game].sort((a, b) => b.score - a.score);
     this.updateGeneralRanking(rankingData, playerName);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(rankingData));
+
+    // Tentar salvar no servidor se o token estiver disponível
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const response = await fetch('http://localhost:3000/save-score', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            game,
+            score,
+            gameSpecificData: gameData
+          }),
+        });
+        await response.json();
+      } catch (error) {
+        console.error('Erro ao salvar no servidor:', error);
+      }
+    }
 
     return score;
   },
@@ -208,16 +242,40 @@ const rankingManager = {
     if (playerIndex !== -1) {
       rankingData.geral[playerIndex].score = totalScore;
       rankingData.geral[playerIndex].gameData = gameData;
+      rankingData.geral[playerIndex].date = new Date().toISOString();
     } else {
-      rankingData.geral.push({ name: playerName, score: totalScore, gameData });
+      rankingData.geral.push({ 
+        name: playerName, 
+        score: totalScore, 
+        gameData,
+        date: new Date().toISOString()
+      });
     }
 
     rankingData.geral.sort((a, b) => b.score - a.score);
   }
 };
 
+// Torna o rankingManager disponível globalmente
+window.rankingManager = rankingManager;
 
+// Função para reiniciar o quiz
+function restartCurrentGame() {
+  // Reiniciar variáveis
+  questaoAtual = 0;
+  pontos = 0;
+  pontuacao.textContent = `Pontuação: ${pontos}`;
+  
+  // Esconder o overlay de fim de jogo
+  if (typeof gameEndOverlay !== 'undefined' && gameEndOverlay.hide) {
+    gameEndOverlay.hide();
+  }
+  
+  // Carregar a primeira questão
+  carregaQuestao();
+}
 
-
-carregaQuestao();
-
+// Iniciar o quiz
+document.addEventListener('DOMContentLoaded', function() {
+  carregaQuestao();
+});

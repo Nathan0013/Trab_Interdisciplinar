@@ -92,3 +92,129 @@ button:hover {
   background-color: #45a049; /* Cor de fundo ao passar o mouse */
 }
 
+/* Estilos para a tela de fim de jogo */
+.game-end-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.game-end-container {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 30px;
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  animation: popup 0.5s ease-in-out;
+}
+
+@keyframes popup {
+  0% {
+      transform: scale(0.7);
+      opacity: 0;
+  }
+  100% {
+      transform: scale(1);
+      opacity: 1;
+  }
+}
+
+.game-end-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 24px;
+  color: #2E8B57;
+  margin-bottom: 15px;
+}
+
+.game-end-score {
+  font-size: 32px;
+  color: #FF8C00;
+  margin: 20px 0;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.game-end-message {
+  font-size: 18px;
+  margin-bottom: 30px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.game-end-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.end-game-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 180px;
+}
+
+.ranking-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.ranking-btn:hover {
+  background-color: #388E3C;
+  transform: scale(1.05);
+}
+
+.menu-btn {
+  background-color: #2196F3;
+  color: white;
+}
+
+.menu-btn:hover {
+  background-color: #1976D2;
+  transform: scale(1.05);
+}
+
+.play-again-btn {
+  background-color: #FFC107;
+  color: #333;
+}
+
+.play-again-btn:hover {
+  background-color: #FFA000;
+  transform: scale(1.05);
+}
+
+/* Efeito de confete */
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: #f44336;
+  opacity: 0.8;
+  animation: confetti-fall 3s linear infinite;
+}
+
+@keyframes confetti-fall {
+  0% {
+      transform: translateY(-50px) rotate(0deg);
+      opacity: 1;
+  }
+  100% {
+      transform: translateY(100vh) rotate(360deg);
+      opacity: 0;
+  }
+}

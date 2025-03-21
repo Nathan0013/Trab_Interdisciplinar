@@ -3,18 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Biomas</title>
+    
     <link rel="stylesheet" href="style.css">
-    <script src="questoes.js" defer></script>
-    <script src="script.js" defer></script>
+    <!-- Adicionar o CSS necessário para a tela de fim de jogo -->
+    <link rel="stylesheet" href="/public/jogos/menu_jogos/tela_fim.css">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Roboto:wght@300&display=swap" rel="stylesheet">
 
-
-    <title>Quiz Biomas</title>
+    <!-- Carregar na ordem correta: primeiro o script de fim de jogo -->
+    <script defer src="/public/jogos/menu_jogos/tela_fim.js"></script>
+    <!-- Depois script do ranking -->
+    <script defer src="/public/jogos/Ranking/ranking.js"></script>
+    <!-- Por último o script do quiz -->
+    <script defer src="questoes.js"></script>
+    <script defer src="script.js"></script>
 </head>
 <body>
     <a href="/public/jogos/menu_jogos/indice_jogos.html" class="home-button">🏠 Voltar</a>
+    
     <div class="container">
         <div class="epaco_questao" id="questao"><h1>Questão</h1></div>
         <div class="alternativas">
@@ -23,10 +32,23 @@
             <button></button>
             <button></button>
         </div>
-
         <div class="espaco_pontuacao"><h2 id="pontuacao">Pontuação: 0</h2></div>
-
-
+    </div>
+    
+    <!-- Overlay de fim de jogo (idêntico ao do jogo da memória) -->
+    <div id="gameEndOverlay" class="game-end-overlay">
+        <div class="game-end-container">
+            <h1 class="game-end-title">Jogo Finalizado!</h1>
+            <p class="game-end-message">Parabéns, <span id="playerNameEnd">Jogador</span>!</p>
+            <div class="game-end-score">
+                <span id="finalScore">0</span> pontos
+            </div>
+            <div class="game-end-buttons">
+                <button id="playAgainBtn" class="end-game-btn play-again-btn">Jogar Novamente</button>
+                <button id="goToRankingBtn" class="end-game-btn ranking-btn">Ver Ranking</button>
+                <button id="goToMenuBtn" class="end-game-btn menu-btn">Voltar ao Menu</button>
+            </div>
+        </div>
     </div>
 </body>
 </html>

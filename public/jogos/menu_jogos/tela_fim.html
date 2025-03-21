@@ -3,32 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo Finalizado</title>
     
-    <link rel="stylesheet" href="../css/reset.css">
-    <link rel="stylesheet" href="../css/game.css">
-    
-    <title>Jogo da Memória - Biomas Brasileiros</title>
-    
-    <!-- Carrega primeiro o script de fim de jogo -->
-    <script defer src="/public/jogos/menu_jogos/tela_fim.js"></script>
-    <!-- Depois carrega o script do ranking -->
-    <script defer src="/public/jogos/Ranking/ranking.js"></script>
-    <!-- Por último carrega o script do jogo -->
-    <script defer src="/public/jogos/Jogo_da_Memoria/js/game.js"></script>
 </head>
 <body>
-    <a href="/public/jogos/menu_jogos/" class="home-button">🏠 Voltar</a>
-    <main>
-        <header>
-            <span class="player"></span>
-            <span>Tempo: <span class="timer">00</span></span>
-            <span class="movimentos">Movimentos: 0</span>
-        </header>
-        
-        <div class="grid"></div>
-    </main>
-    
-    <!-- Incluir o overlay de fim de jogo -->
+    <!-- Overlay de fim de jogo -->
     <div id="gameEndOverlay" class="game-end-overlay">
         <div class="game-end-container">
             <h1 class="game-end-title">Jogo Finalizado!</h1>
@@ -43,5 +22,6 @@
             </div>
         </div>
     </div>
+
 </body>
 </html>

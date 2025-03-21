@@ -1,48 +1,122 @@
 // URL do backend (local)
 const API_URL = 'http://localhost:3000';
+const STORAGE_KEY = 'biomas_ranking_data';
 
 // Função para buscar dados do ranking
-function getRankingData() {
-  return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
-    geral: [],
-    forca: [],
-    memoria: [],
-    quiz: []
-  };
-}
-
-
-// Função para salvar uma pontuação no banco de dados
-async function saveScore(playerId, game, score, gameSpecificData = {}) {
+async function getRankingData(gameType = 'geral') {
     try {
-        const response = await fetch(`${API_URL}/save-score`, {
-            method: 'POST',
+        // Primeiro tentar buscar do servidor
+        const response = await fetch(`${API_URL}/ranking?game=${gameType}`, {
+            method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}` // Adiciona o token de autenticação
-            },
-            body: JSON.stringify({
-                game,
-                score,
-                gameSpecificData
-            }),
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
         });
-        const result = await response.json();
-        return result;
+        
+        if (response.ok) {
+            const data = await response.json();
+            return data.ranking;
+        } else {
+            // Caso falhe, usar dados locais
+            return getLocalRankingData(gameType);
+        }
     } catch (error) {
-        console.error('Erro ao salvar pontuação:', error);
-        return null;
+        console.error('Erro ao buscar ranking:', error);
+        // Fallback para dados locais em caso de falha
+        return getLocalRankingData(gameType);
     }
 }
 
+// Função para buscar dados do localStorage
+function getLocalRankingData(gameType = 'geral') {
+    const rankingData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+        geral: [],
+        forca: [],
+        memoria: [],
+        quiz: []
+    };
+    
+    return rankingData[gameType].map(player => ({
+        nome: player.name,
+        pontuacao: player.score,
+        data_pontuacao: player.date || new Date().toISOString()
+    }));
+}
+
+// Função para salvar uma pontuação no banco de dados
+async function saveScore(game, score, gameSpecificData = {}) {
+    try {
+        const token = localStorage.getItem('token');
+        
+        // Se tiver token, salva no servidor
+        if (token) {
+            const response = await fetch(`${API_URL}/save-score`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    game,
+                    score,
+                    gameSpecificData
+                }),
+            });
+            const result = await response.json();
+            return result;
+        } else {
+            // Se não tiver token, salva apenas localmente
+            return saveScoreLocally(game, score, gameSpecificData);
+        }
+    } catch (error) {
+        console.error('Erro ao salvar pontuação:', error);
+        // Fallback para salvar localmente em caso de falha
+        return saveScoreLocally(game, score, gameSpecificData);
+    }
+}
+
+// Função para salvar pontuação localmente
+function saveScoreLocally(game, score, gameSpecificData = {}) {
+    const playerName = localStorage.getItem('jogador') || 'Anônimo';
+    
+    let rankingData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+        geral: [],
+        forca: [],
+        memoria: [],
+        quiz: []
+    };
+
+    let playerIndex = rankingData[game].findIndex(p => p.name === playerName);
+    if (playerIndex !== -1) {
+        if (score > rankingData[game][playerIndex].score) {
+            rankingData[game][playerIndex].score = score;
+            rankingData[game][playerIndex].gameData = gameSpecificData;
+            rankingData[game][playerIndex].date = new Date().toISOString();
+        }
+    } else {
+        rankingData[game].push({ 
+            name: playerName, 
+            score, 
+            gameData: gameSpecificData,
+            date: new Date().toISOString()
+        });
+    }
+
+    rankingData[game].sort((a, b) => b.score - a.score);
+    updateGeneralRanking(rankingData, playerName);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(rankingData));
+
+    return { score };
+}
+
 // Função para adicionar uma pontuação ao ranking
-async function addScore(playerId, game, score, gameSpecificData = {}) {
+async function addScore(game, score, gameSpecificData = {}) {
     let normalizedScore;
 
     // Normalizar a pontuação com base no jogo
     switch (game) {
         case 'forca':
-            const remainingAttempts = 7 - (gameSpecificData.attempts || 1);
+            const remainingAttempts = 7 - (gameSpecificData.errors || 1);
             normalizedScore = Math.round((remainingAttempts / 6) * 100);
             break;
 
@@ -60,14 +134,46 @@ async function addScore(playerId, game, score, gameSpecificData = {}) {
             normalizedScore = score;
     }
 
-    // Salvar a pontuação no banco de dados
-    const result = await saveScore(playerId, game, normalizedScore, gameSpecificData);
+    // Salvar a pontuação
+    const result = await saveScore(game, normalizedScore, gameSpecificData);
     return result;
+}
+
+// Função para atualizar o ranking geral
+function updateGeneralRanking(rankingData, playerName) {
+    const games = ['forca', 'memoria', 'quiz'];
+    let totalScore = 0;
+    let gameData = {};
+
+    games.forEach(game => {
+        const playerInGame = rankingData[game].find(p => p.name === playerName);
+        if (playerInGame) {
+            totalScore += playerInGame.score;
+            gameData[game] = playerInGame.gameData;
+        }
+    });
+
+    let playerIndex = rankingData.geral.findIndex(p => p.name === playerName);
+    if (playerIndex !== -1) {
+        rankingData.geral[playerIndex].score = totalScore;
+        rankingData.geral[playerIndex].gameData = gameData;
+    } else {
+        rankingData.geral.push({ 
+            name: playerName, 
+            score: totalScore, 
+            gameData,
+            date: new Date().toISOString()
+        });
+    }
+
+    rankingData.geral.sort((a, b) => b.score - a.score);
 }
 
 // Função para exibir o ranking
 async function displayRanking(gameType = 'geral') {
     const rankingList = document.getElementById('ranking-list');
+    if (!rankingList) return;
+    
     rankingList.innerHTML = '';
 
     // Buscar os dados do ranking
@@ -134,3 +240,45 @@ document.addEventListener('DOMContentLoaded', () => {
     // Exibir o ranking geral por padrão
     displayRanking('geral');
 });
+
+// Exportar funções para serem usadas em outros arquivos
+window.rankingManager = {
+    updatePlayerScore: async function(playerName, game, score, gameSpecificData = {}) {
+        // Salvar no localStorage
+        let rankingData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+            geral: [],
+            forca: [],
+            memoria: [],
+            quiz: []
+        };
+
+        let playerIndex = rankingData[game].findIndex(p => p.name === playerName);
+        if (playerIndex !== -1) {
+            if (score > rankingData[game][playerIndex].score) {
+                rankingData[game][playerIndex].score = score;
+                rankingData[game][playerIndex].gameData = gameSpecificData;
+                rankingData[game][playerIndex].date = new Date().toISOString();
+            }
+        } else {
+            rankingData[game].push({ 
+                name: playerName, 
+                score, 
+                gameData: gameSpecificData,
+                date: new Date().toISOString()
+            });
+        }
+
+        rankingData[game].sort((a, b) => b.score - a.score);
+        updateGeneralRanking(rankingData, playerName);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(rankingData));
+        
+        // Tentar salvar no servidor
+        try {
+            await addScore(game, score, gameSpecificData);
+        } catch (error) {
+            console.error('Erro ao salvar pontuação no servidor:', error);
+        }
+
+        return score;
+    }
+};
