@@ -1,3 +1,4 @@
+
 // Remova a linha import getWord from "./words.js"; e adicione a função getWord diretamente no arquivo
 // ou mantenha a linha abaixo se estiver usando módulos
 import getWord from "./words.js";

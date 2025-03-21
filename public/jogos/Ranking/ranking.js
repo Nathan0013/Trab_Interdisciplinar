@@ -1,4 +1,4 @@
-// URL do backend (local)
+// Versão corrigida de ranking.js
 const API_URL = 'http://localhost:3000';
 const STORAGE_KEY = 'biomas_ranking_data';
 
@@ -6,15 +6,13 @@ const STORAGE_KEY = 'biomas_ranking_data';
 async function getRankingData(gameType = 'geral') {
     try {
         // Primeiro tentar buscar do servidor
-        const response = await fetch(`${API_URL}/ranking?game=${gameType}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
+        const response = await fetch(`${API_URL}/ranking?game=${gameType}`);
         
         if (response.ok) {
             const data = await response.json();
+            console.log("Dados do servidor:", data.ranking);
+            // Armazenar os dados recebidos do servidor no localStorage
+            updateLocalStorageFromServer(gameType, data.ranking);
             return data.ranking;
         } else {
             // Caso falhe, usar dados locais
@@ -24,6 +22,32 @@ async function getRankingData(gameType = 'geral') {
         console.error('Erro ao buscar ranking:', error);
         // Fallback para dados locais em caso de falha
         return getLocalRankingData(gameType);
+    }
+}
+
+// Atualiza dados locais com dados do servidor
+function updateLocalStorageFromServer(gameType, serverData) {
+    try {
+        let rankingData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+            geral: [],
+            forca: [],
+            memoria: [],
+            quiz: []
+        };
+        
+        // Converter formato do servidor para formato local
+        const localFormatData = serverData.map(player => ({
+            name: player.nome,
+            score: player.pontuacao,
+            date: player.data_pontuacao,
+            gameData: player.gameData || {}
+        }));
+        
+        // Atualizar dados locais
+        rankingData[gameType] = localFormatData;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(rankingData));
+    } catch (e) {
+        console.error("Erro ao atualizar localStorage:", e);
     }
 }
 
@@ -39,14 +63,16 @@ function getLocalRankingData(gameType = 'geral') {
     return rankingData[gameType].map(player => ({
         nome: player.name,
         pontuacao: player.score,
-        data_pontuacao: player.date || new Date().toISOString()
+        data_pontuacao: player.date || new Date().toISOString(),
+        gameData: player.gameData || {}
     }));
 }
 
-// Função para salvar uma pontuação no banco de dados
+// Função para salvar uma pontuação
 async function saveScore(game, score, gameSpecificData = {}) {
     try {
         const token = localStorage.getItem('token');
+        const playerName = localStorage.getItem('jogador') || 'Anônimo';
         
         // Se tiver token, salva no servidor
         if (token) {
@@ -62,8 +88,17 @@ async function saveScore(game, score, gameSpecificData = {}) {
                     gameSpecificData
                 }),
             });
-            const result = await response.json();
-            return result;
+            
+            if (response.ok) {
+                const result = await response.json();
+                console.log("Pontuação salva no servidor:", result);
+                
+                // Também salva localmente para garantir consistência
+                saveScoreLocally(game, score, gameSpecificData);
+                return result;
+            } else {
+                throw new Error("Falha ao salvar no servidor");
+            }
         } else {
             // Se não tiver token, salva apenas localmente
             return saveScoreLocally(game, score, gameSpecificData);
@@ -103,184 +138,151 @@ function saveScoreLocally(game, score, gameSpecificData = {}) {
     }
 
     rankingData[game].sort((a, b) => b.score - a.score);
-    updateGeneralRanking(rankingData, playerName);
+    
+    // Chama com os dados de ranking completos, sem especificar jogador
+    updateGeneralRanking(rankingData);
+    
     localStorage.setItem(STORAGE_KEY, JSON.stringify(rankingData));
 
-    return { score };
+    return { score, nome: playerName };
 }
 
-// Função para adicionar uma pontuação ao ranking
-async function addScore(game, score, gameSpecificData = {}) {
-    let normalizedScore;
+// Função para atualizar o ranking geral
+function updateGeneralRanking(rankingData) {
+    const games = ['forca', 'memoria', 'quiz'];
+    // Obter todos os nomes de jogadores únicos de todos os jogos
+    const allPlayers = new Set();
+    
+    games.forEach(game => {
+        rankingData[game].forEach(player => {
+            allPlayers.add(player.name);
+        });
+    });
+    
+    // Recalcular pontuações para todos os jogadores
+    rankingData.geral = [];
+    
+    allPlayers.forEach(playerName => {
+        let totalScore = 0;
+        let gameData = {};
+        
+        games.forEach(game => {
+            const playerInGame = rankingData[game].find(p => p.name === playerName);
+            if (playerInGame) {
+                totalScore += playerInGame.score;
+                gameData[game] = playerInGame.gameData;
+            }
+        });
+        
+        rankingData.geral.push({
+            name: playerName,
+            score: totalScore,
+            gameData: gameData,
+            date: new Date().toISOString()
+        });
+    });
+    
+    // Ordenar ranking geral
+    rankingData.geral.sort((a, b) => b.score - a.score);
+}
 
-    // Normalizar a pontuação com base no jogo
+// Função para normalizar pontuação
+function normalizeScore(game, score, gameSpecificData) {
     switch (game) {
         case 'forca':
-
             const remainingAttempts = 7 - (gameSpecificData.errors || 1);
-
-            normalizedScore = Math.round((remainingAttempts / 6) * 100);
-            break;
+            return Math.round((remainingAttempts / 6) * 100);
 
         case 'memoria':
             const timeScore = Math.max(0, 100 - (gameSpecificData.time / 3));
             const movesScore = Math.max(0, 100 - (gameSpecificData.moves * 5));
-            normalizedScore = Math.round((timeScore + movesScore) / 2);
-            break;
+            return Math.round((timeScore + movesScore) / 2);
 
         case 'quiz':
-            normalizedScore = Math.round((score / 10) * 100);
-            break;
+            return Math.round((score / 10) * 100);
 
         default:
-            normalizedScore = score;
+            return score;
     }
+}
 
+// Função para adicionar uma pontuação ao ranking
+async function addScore(game, score, gameSpecificData = {}) {
+    // Normalizar a pontuação
+    const normalizedScore = normalizeScore(game, score, gameSpecificData);
+    
     // Salvar a pontuação
     const result = await saveScore(game, normalizedScore, gameSpecificData);
     return result;
 }
 
-// Função para atualizar o ranking geral
-function updateGeneralRanking(rankingData, playerName) {
-    const games = ['forca', 'memoria', 'quiz'];
-    let totalScore = 0;
-    let gameData = {};
-
-    games.forEach(game => {
-        const playerInGame = rankingData[game].find(p => p.name === playerName);
-        if (playerInGame) {
-            totalScore += playerInGame.score;
-            gameData[game] = playerInGame.gameData;
-        }
-    });
-
-    let playerIndex = rankingData.geral.findIndex(p => p.name === playerName);
-    if (playerIndex !== -1) {
-        rankingData.geral[playerIndex].score = totalScore;
-        rankingData.geral[playerIndex].gameData = gameData;
-    } else {
-        rankingData.geral.push({ 
-            name: playerName, 
-            score: totalScore, 
-            gameData,
-            date: new Date().toISOString()
-        });
-    }
-
-    rankingData.geral.sort((a, b) => b.score - a.score);
-}
-
-// Função para exibir o ranking
-async function displayRanking(gameType = 'geral') {
-    const rankingList = document.getElementById('ranking-list');
-    if (!rankingList) return;
-    
-    rankingList.innerHTML = '';
-
-    // Buscar os dados do ranking
-    const rankingData = await getRankingData(gameType);
-
-    // Exibir os top 10 jogadores
-    rankingData.slice(0, 10).forEach((player, index) => {
-        const rankingItem = document.createElement('div');
-        rankingItem.classList.add('ranking-item');
-
-        // Posição
-        const positionEl = document.createElement('div');
-        positionEl.classList.add('position');
-        if (index < 3) {
-            const medalPosition = document.createElement('div');
-            medalPosition.classList.add('top-position', `position-${index + 1}`);
-            medalPosition.textContent = index + 1;
-            positionEl.appendChild(medalPosition);
-        } else {
-            positionEl.textContent = index + 1;
-        }
-
-        // Nome do jogador
-        const nameEl = document.createElement('div');
-        nameEl.classList.add('player-name');
-        nameEl.textContent = player.nome;
-
-        // Pontuação
-        const scoreEl = document.createElement('div');
-        scoreEl.classList.add('player-score');
-        scoreEl.textContent = `${player.pontuacao} pts`;
-
-        // Adicionar elementos ao item do ranking
-        rankingItem.appendChild(positionEl);
-        rankingItem.appendChild(nameEl);
-        rankingItem.appendChild(scoreEl);
-
-        // Adicionar item à lista
-        rankingList.appendChild(rankingItem);
-    });
-
-    // Mensagem se não houver jogadores
-    if (rankingData.length === 0) {
-        const noPlayersMsg = document.createElement('div');
-        noPlayersMsg.classList.add('no-players-msg');
-        noPlayersMsg.textContent = 'Nenhum jogador registrado ainda.';
-        rankingList.appendChild(noPlayersMsg);
-    }
-}
-
-// Event listeners para abas
-document.addEventListener('DOMContentLoaded', () => {
-    const tabButtons = document.querySelectorAll('.tab-btn');
-
-    tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            const gameType = button.dataset.game;
-            displayRanking(gameType);
-        });
-    });
-
-    // Exibir o ranking geral por padrão
-    displayRanking('geral');
-});
-
 // Exportar funções para serem usadas em outros arquivos
 window.rankingManager = {
     updatePlayerScore: async function(playerName, game, score, gameSpecificData = {}) {
-        // Salvar no localStorage
-        let rankingData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
-            geral: [],
-            forca: [],
-            memoria: [],
-            quiz: []
-        };
-
-        let playerIndex = rankingData[game].findIndex(p => p.name === playerName);
-        if (playerIndex !== -1) {
-            if (score > rankingData[game][playerIndex].score) {
-                rankingData[game][playerIndex].score = score;
-                rankingData[game][playerIndex].gameData = gameSpecificData;
-                rankingData[game][playerIndex].date = new Date().toISOString();
-            }
-        } else {
-            rankingData[game].push({ 
-                name: playerName, 
-                score, 
-                gameData: gameSpecificData,
-                date: new Date().toISOString()
-            });
-        }
-
-        rankingData[game].sort((a, b) => b.score - a.score);
-        updateGeneralRanking(rankingData, playerName);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(rankingData));
-        
-        // Tentar salvar no servidor
         try {
-            await addScore(game, score, gameSpecificData);
+            // Normalizar pontuação
+            const normalizedScore = normalizeScore(game, score, gameSpecificData);
+            
+            // Salvar no servidor se tiver token
+            const token = localStorage.getItem('token');
+            if (token) {
+                try {
+                    const response = await fetch(`${API_URL}/save-score`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            game,
+                            score: normalizedScore,
+                            gameSpecificData
+                        }),
+                    });
+                    
+                    if (response.ok) {
+                        const result = await response.json();
+                        console.log("Servidor:", result);
+                    }
+                } catch (error) {
+                    console.error('Erro ao salvar no servidor:', error);
+                }
+            }
+            
+            // Sempre salva localmente para garantir consistência
+            saveScoreLocally(game, normalizedScore, gameSpecificData);
+            
+            return normalizedScore;
         } catch (error) {
-            console.error('Erro ao salvar pontuação no servidor:', error);
+            console.error('Erro ao atualizar pontuação:', error);
+            return score;
         }
-
-        return score;
-    }
+    },
+    
+    getRankingData
 };
+
+// Inicializar event listeners se estiver na página de ranking
+document.addEventListener('DOMContentLoaded', () => {
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const rankingList = document.getElementById('ranking-list');
+
+    if (tabButtons.length > 0) {
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                const gameType = button.dataset.game;
+                
+                if (typeof displayRanking === 'function') {
+                    displayRanking(gameType);
+                }
+            });
+        });
+        
+        // Exibir o ranking geral por padrão se a função estiver disponível
+        if (typeof displayRanking === 'function') {
+            displayRanking('geral');
+        }
+    }
+});

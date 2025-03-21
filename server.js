@@ -80,40 +80,67 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// Rota protegida (Exemplo)
+// Rota para obter ranking
 app.get("/ranking", async (req, res) => {
   try {
     const { game } = req.query;
+    let ranking;
     
-    // Se for ranking geral
+    // Tratamento para o caso do ranking geral
     if (game === 'geral') {
-      const [ranking] = await db.query(
-        `SELECT u.nome, SUM(p.pontuacao) as pontuacao, MAX(p.data_pontuacao) as data_pontuacao 
+      const [result] = await db.query(
+        `SELECT u.nome, 
+                SUM(p.pontuacao) as pontuacao, 
+                MAX(p.data_pontuacao) as data_pontuacao,
+                JSON_OBJECT(
+                  'forca', (SELECT JSON_OBJECT('attempts', COUNT(*)) FROM pontuacoes WHERE jogo_id = 1 AND usuario_id = u.id),
+                  'memoria', (SELECT JSON_OBJECT('moves', COUNT(*)) FROM pontuacoes WHERE jogo_id = 2 AND usuario_id = u.id),
+                  'quiz', (SELECT JSON_OBJECT('time', COUNT(*)) FROM pontuacoes WHERE jogo_id = 3 AND usuario_id = u.id)
+                ) as gameData
          FROM pontuacoes p
          JOIN usuarios u ON p.usuario_id = u.id
          GROUP BY u.id
          ORDER BY pontuacao DESC
          LIMIT 10`
       );
-      return res.json({ ranking });
-    }
-    
-    // Para jogos específicos
-    const [jogo] = await db.query("SELECT id FROM jogos WHERE nome = ?", [game]);
-    if (jogo.length === 0) {
-      return res.status(404).json({ error: "Jogo não encontrado" });
+      ranking = result;
+    } 
+    // Tratamento para jogos específicos
+    else {
+      let jogoId;
+      
+      // Mapeia o nome do jogo para seu ID
+      if (game === 'forca') jogoId = 1;
+      else if (game === 'memoria') jogoId = 2;
+      else if (game === 'quiz') jogoId = 3;
+      else {
+        return res.status(404).json({ error: "Jogo não encontrado" });
+      }
+
+      const [result] = await db.query(
+        `SELECT u.nome, 
+                p.pontuacao, 
+                p.data_pontuacao,
+                CASE 
+                  WHEN ? = 1 THEN JSON_OBJECT('attempts', 7 - p.pontuacao) 
+                  WHEN ? = 2 THEN JSON_OBJECT('moves', p.pontuacao)
+                  WHEN ? = 3 THEN JSON_OBJECT('time', p.pontuacao)
+                  ELSE '{}'
+                END as gameData
+         FROM pontuacoes p
+         JOIN usuarios u ON p.usuario_id = u.id
+         WHERE p.jogo_id = ?
+         ORDER BY p.pontuacao DESC
+         LIMIT 10`,
+        [jogoId, jogoId, jogoId, jogoId]
+      );
+      ranking = result;
     }
 
-    const jogoId = jogo[0].id;
-    const [ranking] = await db.query(
-      `SELECT u.nome, p.pontuacao, p.data_pontuacao 
-       FROM pontuacoes p
-       JOIN usuarios u ON p.usuario_id = u.id
-       WHERE p.jogo_id = ?
-       ORDER BY p.pontuacao DESC
-       LIMIT 10`,
-      [jogoId]
-    );
+    // Se não houver registros, retornar array vazio
+    if (!ranking) {
+      ranking = [];
+    }
 
     res.json({ ranking });
   } catch (error) {
@@ -128,14 +155,21 @@ app.post("/save-score", verificarToken, async (req, res) => {
     const { game, score, gameSpecificData } = req.body;
     const userId = req.userId;
 
-    // Verificar se o jogo existe
-    const [jogo] = await db.query("SELECT id FROM jogos WHERE nome = ?", [game]);
-    if (jogo.length === 0) {
-      // Se o jogo não existir, criá-lo
-      const [result] = await db.query("INSERT INTO jogos (nome) VALUES (?)", [game]);
-      var jogoId = result.insertId;
-    } else {
-      var jogoId = jogo[0].id;
+    // Obter o ID do jogo baseado no nome
+    let jogoId;
+    if (game === 'forca') jogoId = 1;
+    else if (game === 'memoria') jogoId = 2;
+    else if (game === 'quiz') jogoId = 3;
+    else {
+      // Se o jogo não existir nos mapeamentos pré-definidos, buscar na tabela
+      const [jogo] = await db.query("SELECT id FROM jogos WHERE nome = ?", [game]);
+      if (jogo.length === 0) {
+        // Se o jogo não existir, criá-lo
+        const [result] = await db.query("INSERT INTO jogos (nome) VALUES (?)", [game]);
+        jogoId = result.insertId;
+      } else {
+        jogoId = jogo[0].id;
+      }
     }
 
     // Buscar a melhor pontuação atual do usuário para este jogo
@@ -172,85 +206,7 @@ app.post("/save-score", verificarToken, async (req, res) => {
   }
 });
 // Rota para salvar pontuação
-app.post("/save-score", verificarToken, async (req, res) => {
-  try {
-    const { game, score, gameSpecificData } = req.body;
-    const userId = req.userId;
 
-    // Normalizar a pontuação com base no jogo
-    let normalizedScore;
-    switch (game) {
-      case 'forca':
-        const remainingAttempts = 7 - (gameSpecificData.attempts || 1);
-        normalizedScore = Math.round((remainingAttempts / 6) * 100);
-        break;
-
-      case 'memoria':
-        const timeScore = Math.max(0, 100 - (gameSpecificData.time / 3));
-        const movesScore = Math.max(0, 100 - (gameSpecificData.moves * 5));
-        normalizedScore = Math.round((timeScore + movesScore) / 2);
-        break;
-
-      case 'quiz':
-        normalizedScore = Math.round((score / 10) * 100);
-        break;
-
-      default:
-        normalizedScore = score;
-    }
-
-    // Salvar a pontuação no banco de dados
-    const [jogo] = await db.query("SELECT id FROM jogos WHERE nome = ?", [game]);
-    if (jogo.length === 0) {
-      return res.status(404).json({ error: "Jogo não encontrado" });
-    }
-
-    const jogoId = jogo[0].id;
-    await db.query(
-      "INSERT INTO pontuacoes (usuario_id, jogo_id, pontuacao, data_pontuacao) VALUES (?, ?, ?, NOW())",
-      [userId, jogoId, normalizedScore]
-    );
-
-    // Atualizar a pontuação total do usuário
-    await db.query(
-      "UPDATE usuarios SET pontuacao_total = pontuacao_total + ? WHERE id = ?",
-      [normalizedScore, userId]
-    );
-
-    res.json({ message: "Pontuação salva com sucesso!", score: normalizedScore });
-  } catch (error) {
-    console.error("Erro ao salvar pontuação:", error);
-    res.status(500).json({ error: "Erro interno do servidor" });
-  }
-});
-
-// Rota para buscar o ranking de um jogo
-app.get("/ranking", async (req, res) => {
-  try {
-    const { game } = req.query;
-
-    const [jogo] = await db.query("SELECT id FROM jogos WHERE nome = ?", [game]);
-    if (jogo.length === 0) {
-      return res.status(404).json({ error: "Jogo não encontrado" });
-    }
-
-    const jogoId = jogo[0].id;
-    const [ranking] = await db.query(
-      `SELECT u.nome, p.pontuacao, p.data_pontuacao 
-       FROM pontuacoes p
-       JOIN usuarios u ON p.usuario_id = u.id
-       WHERE p.jogo_id = ?
-       ORDER BY p.pontuacao DESC
-       LIMIT 10`,
-      [jogoId]
-    );
-
-    res.json({ ranking });
-  } catch (error) {
-    console.error("Erro ao buscar ranking:", error);
-    res.status(500).json({ error: "Erro interno do servidor" });
-  }
-});
 
 // Iniciar o servidor
 const PORT = process.env.PORT || 3000;

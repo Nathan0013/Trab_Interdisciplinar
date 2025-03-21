@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jogo da forca</title>
     <link rel="stylesheet" href="style.css" />
-
     <link rel="stylesheet" href="/public/jogos/menu_jogos/tela_fim.css">
 
     <script defer src="/public/jogos/menu_jogos/tela_fim.js"></script>
@@ -14,7 +13,6 @@
     <script defer src="/public/jogos/Ranking/ranking.js"></script>
     <!-- Por último o script do quiz -->
     <script defer src="script.js"></script>
-
   </head>
   <body>
     <a href="/public/jogos/menu_jogos/indice_jogos.html" class="home-button">🏠 Voltar</a>
@@ -23,7 +21,6 @@
     </header>
     <button class="new">Novo Jogo</button>
     <main>
-
       <div id="gameEndOverlay" class="game-end-overlay">
         <div class="game-end-container">
             <h1 class="game-end-title">Jogo Finalizado!</h1>
@@ -38,7 +35,16 @@
             </div>
         </div>
     </div>
-
+      <article class="content-img">
+        <img src="img/img1.png" width="250px" alt="Jogo da forca" />
+      </article>
+      <article class="content">
+        <div class="guess-word"></div>
+        <div class="clue"></div>
+        <div class="btns"></div>
+      </article>
+    </main>
+    <script src="/public/jogos/menu_jogos/tela_fim.html"></script>
     <script src="script.js" type="module"></script>
   </body>
 </html>

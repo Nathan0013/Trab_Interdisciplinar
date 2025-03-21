@@ -1,7 +1,7 @@
 const grid = document.querySelector('.grid');
 const spanPlayer = document.querySelector('.player');
 const timer = document.querySelector('.timer');
-let moves = 0; // Corrigido de 'movimentos' para 'moves' para manter consistência
+let moves = 0; // Contador de movimentos
 
 const personagens = [
     'amazonia.jpg',
@@ -112,11 +112,11 @@ const rankingManager = {
     }
   };
   
-  // Torna o rankingManager disponível globalmente
-  window.rankingManager = rankingManager;
+// Torna o rankingManager disponível globalmente
+window.rankingManager = rankingManager;
 
 function checkEndGame() {
-    const disabledCards = document.querySelectorAll('.desabilitar-carta'); // Corrigido para usar a classe correta
+    const disabledCards = document.querySelectorAll('.desabilitar-carta');
     const totalPairs = personagens.length;
     
     if (disabledCards.length === totalPairs * 2) { // Verificar se todas as cartas estão desabilitadas
@@ -126,22 +126,58 @@ function checkEndGame() {
         const time = +timer.innerHTML;
         const score = calculateMemoryScore(moves, time);
         
-        // Atualizar a pontuação do jogador
-        const playerName = localStorage.getItem('jogador') || 'Anonymous';
-        rankingManager.updatePlayerScore(playerName, 'memoria', score, { moves, time });
+        // Criar objeto com dados específicos do jogo
+        const gameData = { 
+            moves: moves, 
+            time: time,
+            pairs: totalPairs,
+            completion: 'success'
+        };
         
-        // Mostrar o overlay de fim de jogo
-        if (typeof showGameEnd === 'function') {
-            showGameEnd(score, 'memoria');
-        } else {
-            alert(`Parabéns ${playerName}! Você completou o jogo com ${score} pontos em ${time} segundos e ${moves} movimentos.`);
-        }
+        // Obter nome do jogador
+        const playerName = localStorage.getItem('jogador') || 'Anonymous';
+        
+        // Registrar a pontuação no ranking
+        console.log(`Salvando pontuação: ${score} para jogador: ${playerName}`);
+        console.log(`Dados do jogo:`, gameData);
+        
+        // Atualizar pontuação no ranking
+        rankingManager.updatePlayerScore(playerName, 'memoria', score, gameData)
+          .then(() => {
+            console.log("Pontuação salva com sucesso!");
+            
+            // Mostrar overlay de fim de jogo
+            if (typeof showGameEnd === 'function') {
+                showGameEnd(score, 'memoria');
+            } else {
+                alert(`Parabéns ${playerName}! Você completou o jogo com ${score} pontos em ${time} segundos e ${moves} movimentos.`);
+                setTimeout(() => {
+                    restartCurrentGame();
+                }, 1500);
+            }
+          })
+          .catch(error => {
+            console.error("Erro ao salvar pontuação:", error);
+            
+            // Mostrar fim de jogo mesmo com erro
+            if (typeof showGameEnd === 'function') {
+                showGameEnd(score, 'memoria');
+            } else {
+                alert(`Parabéns ${playerName}! Você completou o jogo com ${score} pontos em ${time} segundos e ${moves} movimentos.`);
+                setTimeout(() => {
+                    restartCurrentGame();
+                }, 1500);
+            }
+          });
     }
 }
 
 const checkCards = () => {
     moves++; // Incrementa o contador de movimentos
-    document.querySelector('.movimentos').innerHTML = `Movimentos: ${moves}`;
+    const movesElement = document.querySelector('.movimentos');
+    if (movesElement) {
+        movesElement.innerHTML = `Movimentos: ${moves}`;
+    }
 
     const firstCharacter = firstCard.getAttribute('data-character');
     const secondCharacter = secondCard.getAttribute('data-character');
@@ -226,7 +262,6 @@ const loadGame = () => {
 };
 
 const startTimer = () => {
-
     // Reinicia o timer
     timer.innerHTML = '00';
     
@@ -246,6 +281,14 @@ window.onload = () => {
     if (spanPlayer) {
         spanPlayer.innerHTML = playerName || 'Jogador';
     }
+    
+    // Inicializar o contador de movimentos
+    moves = 0;
+    const movesElement = document.querySelector('.movimentos');
+    if (movesElement) {
+        movesElement.innerHTML = `Movimentos: ${moves}`;
+    }
+    
     startTimer();
     loadGame();
 };
@@ -253,7 +296,11 @@ window.onload = () => {
 function restartCurrentGame() {
     // Reiniciar variáveis
     moves = 0;
-    document.querySelector('.movimentos').textContent = `Movimentos: ${moves}`;
+    const movesElement = document.querySelector('.movimentos');
+    if (movesElement) {
+        movesElement.textContent = `Movimentos: ${moves}`;
+    }
+    
     timer.innerHTML = '00';
     firstCard = '';
     secondCard = '';
@@ -266,11 +313,17 @@ function restartCurrentGame() {
     loadGame();
 }
 
+// Tornar a função de reinício disponível globalmente
+window.restartCurrentGame = restartCurrentGame;
+
 // Carregar função de fim de jogo se necessário
 if (!window.showGameEnd) {
     window.showGameEnd = function(score, gameType) {
         // Fallback simples se o script tela_fim.html não estiver carregado
         const playerName = localStorage.getItem('jogador') || 'Jogador';
         alert(`Parabéns ${playerName}! Você completou o jogo ${gameType} com ${score} pontos!`);
+        setTimeout(() => {
+            restartCurrentGame();
+        }, 1500);
     };
 }
